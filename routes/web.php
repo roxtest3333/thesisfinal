@@ -19,7 +19,6 @@ use App\Models\Student;
 
 // Email verification routes
 Route::get('/email/verify/{id}/{hash}', [LoginController::class, 'verifyEmail'])
-    // Remove the signed middleware for now
     ->name('verification.verify');
     
 Route::post('/email/verification-notification', [LoginController::class, 'resendVerificationEmail'])
