@@ -15,7 +15,7 @@
                     <h5 class="stat-card-title">Pending Requests</h5>
 
                     @if($pendingSchedules->isEmpty())
-                        <p class="text-gray-500">No pending requests.</p>
+                        <p class="text-white">No pending requests.</p>
                     @else
                         @foreach ($pendingSchedules as $schedule)
                             <div class="schedule-box">
@@ -50,7 +50,7 @@
                     <h5 class="stat-card-title">Rejected Requests</h5>
 
                     @if($rejectedSchedules->isEmpty())
-                        <p class="text-gray-500">No rejected requests.</p>
+                        <p class="text-white">No rejected requests.</p>
                     @else
                         @foreach ($rejectedSchedules as $schedule)
                             <div class="schedule-box rejected-box">

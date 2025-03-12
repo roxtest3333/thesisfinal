@@ -70,15 +70,15 @@ body::before {
     margin-bottom: 1rem;
 }
 
-/* Schedule Box - General */
 .schedule-box {
+    margin-bottom: 1.5rem; /* Adds space between each request */
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
     background: rgba(240, 240, 240, 0.85);
     backdrop-filter: blur(10px);
     border-radius: 10px;
-    padding: 1.25rem;
+    padding: 1.5rem; 
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     transition: all 0.3s ease-in-out;
 }
@@ -91,6 +91,8 @@ body::before {
 /* Pending and Rejected Cards */
 .schedule-card {
     border: none;
+    padding: 1.5rem; /* Adds space between sections */
+    margin-bottom: 2rem; /* Increased gap between pending and rejected sections */
 }
 
 /* File Name Row */
@@ -158,6 +160,7 @@ body::before {
 .rejected-box {
     background-color: #fee2e2;
     border: 1px solid #fca5a5;
+    margin-bottom: 1.5rem;
 }
 
 /* Rejected Badge */
@@ -170,7 +173,7 @@ body::before {
     font-size: 0.875rem;
     color: #991b1b;
     margin-top: 10px;
-    padding: 6px 12px;
+    padding: 8px 14px;
     background: rgba(255, 255, 255, 0.9);
     border-radius: 6px;
     border-left: 4px solid #dc2626;
