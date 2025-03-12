@@ -29,21 +29,21 @@ class LoginController extends Controller
     }
 
     public function login(Request $request)
-{
-    $credentials = $request->validate([
-        'email' => 'required|email',
-        'password' => 'required'
-    ]);
-
-    $remember = $request->has('remember');
-
-    // Retrieve student record
-    $student = Student::where('email', $request->email)->first();
-
-    // Ensure `email_verified_at` is properly checked
-    if ($student && empty($student->email_verified_at)) { // Changed to `empty()`
-        return back()->withErrors(['email' => 'Please verify your email before logging in.'])->withInput();
-    }
+    {
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+    
+        $remember = $request->has('remember');
+    
+        // Retrieve student record
+        $student = Student::where('email', $request->email)->first();
+    
+        // Check if the student exists and if email is not verified
+        if ($student && is_null($student->email_verified_at)) {
+            return back()->withErrors(['email' => 'Please verify your email before logging in.'])->withInput();
+        }
 
     // Try admin login
     if (Auth::guard('web')->attempt($credentials, $remember)) {

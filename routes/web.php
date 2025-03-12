@@ -18,15 +18,15 @@ use App\Http\Controllers\Admin\ReportController;
 use App\Models\Student;
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $student = Student::findOrFail($request->id);
-
+    
     if (!$student->hasVerifiedEmail()) {
-        $student->markEmailAsVerified();
-        $student->save(); // Ensure it saves
+        // Update directly with current timestamp
+        $student->email_verified_at = now();
+        $student->save();
     }
-
+    
     return redirect('/login')->with('message', 'Email verified successfully! You can now log in.');
-})->middleware(['signed'])->name('verification.verify'); // Removed 'auth'
-
+})->middleware(['signed'])->name('verification.verify');
 // Landing Page
 Route::get('/', function () {
     if (Auth::guard('web')->check()) {
