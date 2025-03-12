@@ -19,9 +19,10 @@ use App\Models\Student;
 
 
 // Email verification routes
-Route::get('/email/verify/{id}/{hash}', [LoginController::class, 'verifyEmail'])
-    ->middleware('signed')
-    ->name('verification.verify');
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill(); // Laravel will automatically verify the user
+    return redirect('/login')->with('message', 'Email verified successfully! You can now log in.');
+})->middleware(['auth', 'signed'])->name('verification.verify');
     
 Route::post('/email/verification-notification', [LoginController::class, 'resendVerificationEmail'])
     ->middleware('throttle:6,1')
