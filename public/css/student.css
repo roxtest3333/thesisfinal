@@ -49,7 +49,17 @@ body::before {
     z-index: 2;
     text-align: center;
 }
+.slide-fade-in-left,
+.dashboard-title {
+    opacity: 0;
+    animation: slideFadeInLeft 0.8s ease-out forwards;
+}
 
+.slide-fade-in-right,
+.view-weekly-btn {
+    opacity: 0;
+    animation: slideFadeInRight 0.8s ease-out forwards;
+}
 .dashboard-title {
     font-size: 2.25rem;
     font-weight: 800;
@@ -91,23 +101,6 @@ body::before {
     margin-bottom: 1rem;
 }
 
-.schedule-box {
-    margin-bottom: 1.5rem; /* Adds space between each request */
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    background: rgba(240, 240, 240, 0.85);
-    backdrop-filter: blur(10px);
-    border-radius: 10px;
-    padding: 1.5rem; 
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    transition: all 0.3s ease-in-out;
-}
-
-.schedule-box:hover {
-    background: rgba(240, 240, 240, 0.95);
-    transform: scale(1.02);
-}
 
 /* Pending and Rejected Cards */
 .schedule-card {
@@ -172,11 +165,6 @@ body::before {
     transition: all 0.3s ease-in-out;
 }
 
-.cancel-btn:hover {
-    background-color: #dc2626;
-    transform: scale(1.05);
-}
-
 /* Rejected Box */
 .rejected-box {
     background-color: #fee2e2;
@@ -216,7 +204,7 @@ body::before {
         margin-top: 6px;
     }
 }
-
+/* General Fade-in Animation */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -228,7 +216,138 @@ body::before {
     }
 }
 
+/* Smooth fade-in effect */
 .fade-in {
     opacity: 0;
     animation: fadeIn 0.6s ease-out forwards;
 }
+
+/* Fade-in with delay for staggered effect */
+.fade-in-delay-1 {
+    opacity: 0;
+    animation: fadeIn 0.8s ease-out forwards;
+    animation-delay: 0.2s;
+}
+
+.fade-in-delay-2 {
+    opacity: 0;
+    animation: fadeIn 1s ease-out forwards;
+    animation-delay: 0.4s;
+}
+
+.fade-in-delay-3 {
+    opacity: 0;
+    animation: fadeIn 1.2s ease-out forwards;
+    animation-delay: 0.6s;
+}
+
+/* Scale & Fade-in Effect */
+@keyframes scaleFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.scale-fade-in {
+    opacity: 0;
+    animation: scaleFadeIn 0.6s ease-out forwards;
+}
+
+/* Left-to-Right Fade-in */
+@keyframes slideFadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.slide-fade-in-left {
+    opacity: 0;
+    animation: slideFadeInLeft 0.7s ease-out forwards;
+}
+
+/* Right-to-Left Fade-in */
+@keyframes slideFadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.slide-fade-in-right {
+    opacity: 0;
+    animation: slideFadeInRight 0.7s ease-out forwards;
+}
+
+/* Apply Different Animations to Elements */
+.schedule-box {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: rgba(240, 240, 240, 0.85);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    padding: 1.5rem; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease-in-out;
+    animation: fadeIn 0.6s ease-out forwards;
+}
+
+.schedule-box:hover {
+    background: rgba(240, 240, 240, 0.95);
+    transform: scale(1.02);
+}
+.schedule-item {
+    opacity: 0;
+    animation: fadeIn 0.6s ease-out forwards;
+}
+/* Staggered animation for schedule items */
+.schedule-item:nth-child(1) {
+    animation: fadeIn 0.6s ease-out forwards;
+}
+.schedule-item:nth-child(2) {
+    animation: fadeIn 0.8s ease-out forwards;
+    animation-delay: 0.2s;
+}
+.schedule-item:nth-child(3) {
+    animation: fadeIn 1s ease-out forwards;
+    animation-delay: 0.4s;
+}
+
+/* Transition effects for badges */
+.approved-badge,
+.pending-badge,
+.rejected-badge {
+    animation: scaleFadeIn 0.5s ease-out forwards;
+}
+
+/* Transition effect for page title */
+.dashboard-title {
+    animation: slideFadeInLeft 0.8s ease-out forwards;
+}
+
+/* Buttons with hover transition */
+.cancel-btn:hover {
+    background-color: #dc2626;
+    transform: scale(1.05);
+    transition: transform 0.2s ease-in-out;
+}
+
+.view-weekly-btn {
+    animation: slideFadeInRight 0.8s ease-out forwards;
+}
+
