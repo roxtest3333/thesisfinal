@@ -1,4 +1,17 @@
-/* General Page Styling */
+.completed-box:hover {
+    background-color: rgba(240, 255, 240, 1);
+    transform: scale(1.02);
+}
+
+/* Approved Badge */
+.approved-badge {
+    background-color: #16a34a;
+    padding: 8px 14px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: 999px;
+    color: white;
+}
 .dashboard-container {
     max-width: 80rem;
     margin-left: auto;

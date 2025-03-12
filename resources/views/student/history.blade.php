@@ -5,9 +5,7 @@
     <div class="page-overlay">
         <div class="dashboard-header">
             <h2 class="dashboard-title">Completed Requests</h2>
-            <p class="dashboard-subtitle">
-                Here is a list of your past requests.
-            </p>
+            <p class="dashboard-subtitle">Here is a list of your past requests.</p>
         </div>
 
         <div class="dashboard-grid">
@@ -16,25 +14,29 @@
                     <h5 class="stat-card-title">Past Requests</h5>
 
                     @if($completedSchedules->isEmpty())
-                        <p class="text-gray-500">No completed requests.</p>
+                        <p class="text-white">No completed requests.</p>
                     @else
-                        <ul class="schedule-list">
-                            @foreach ($completedSchedules as $schedule)
-                                <li class="schedule-item">
-                                    <strong class="text-lg text-gray-700">{{ $schedule->file->name }}</strong> <br>
-                                    <span class="text-sm text-gray-500">Date:</span> 
-                                    <span class="text-gray-700">{{ \Carbon\Carbon::parse($schedule->preferred_date)->format('M d, Y') }}</span> <br>
-                                    <span class="text-sm text-gray-500">Time:</span>
-                                    <span class="text-gray-700">{{ ucfirst($schedule->preferred_time) }}</span> <br>
-                                    <span class="text-sm text-gray-500">Status:</span>
-                                    <span class="inline-block py-2 px-4 rounded-full text-sm font-semibold 
-                                        {{ $schedule->status == 'approved' ? 'bg-approved' : 'bg-rejected' }} 
-                                        text-white shadow-md">
+                        @foreach ($completedSchedules as $schedule)
+                            <div class="schedule-box completed-box"> 
+                                <div class="file-name">
+                                    <strong>{{ $schedule->file->file_name }}</strong>
+                                </div>
+
+                                <div class="schedule-info">
+                                    <div class="date-time">
+                                        <span><strong>Date:</strong> {{ \Carbon\Carbon::parse($schedule->preferred_date)->format('M d, Y') }}</span> 
+                                        <span><strong>Time:</strong> {{ ucfirst($schedule->preferred_time) }}</span>
+                                    </div>
+                                </div>
+
+                                <div class="status-actions">
+                                    <div class="status-badge 
+                                        {{ $schedule->status == 'approved' ? 'approved-badge' : 'rejected-badge' }}">
                                         {{ ucfirst($schedule->status) }}
-                                    </span>
-                                </li>
-                            @endforeach
-                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
                     @endif
                 </div>
             </div>
