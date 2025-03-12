@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\URL; // Add this import
-use Illuminate\Support\Facades\Mail; // Add this if you'll send emails
+use Illuminate\Support\Facades\URL; 
+use Illuminate\Support\Facades\Mail; 
 use App\Models\User;
 use App\Models\Student;
 use Illuminate\Auth\Events\Verified;
@@ -30,7 +30,7 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return view('auth.login');
+        return redirect('/login')->with('message', 'Logout Successful');
     }
 
     public function login(Request $request)
