@@ -16,17 +16,15 @@ use App\Http\Controllers\Student\DashboardController as StudentDashboardControll
 use App\Http\Controllers\Student\StudentProfileController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Models\Student;
-Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-    $student = Student::findOrFail($request->id);
+
+// Email verification routes
+Route::get('/email/verify/{id}/{hash}', [LoginController::class, 'verifyEmail'])
+    ->middleware('signed')
+    ->name('verification.verify');
     
-    if (!$student->hasVerifiedEmail()) {
-        // Update directly with current timestamp
-        $student->email_verified_at = now();
-        $student->save();
-    }
-    
-    return redirect('/login')->with('message', 'Email verified successfully! You can now log in.');
-})->middleware(['signed'])->name('verification.verify');
+Route::post('/email/verification-notification', [LoginController::class, 'resendVerificationEmail'])
+    ->middleware('throttle:6,1')
+    ->name('verification.send');
 // Landing Page
 Route::get('/', function () {
     if (Auth::guard('web')->check()) {
