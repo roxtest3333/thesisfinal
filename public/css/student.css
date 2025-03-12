@@ -119,9 +119,10 @@ body::before {
 /* Status and Actions (Pending & Cancel) */
 .status-actions {
     display: flex;
-    align-items: center;
-    gap: 10px; /* Add space between Pending & Cancel */
-    margin-top: 12px; /* Add space from Date/Time */
+    flex-direction: column; /* Stacks items vertically */
+    align-items: center; /* Centers them */
+    gap: 8px; /* Controls spacing */
+    margin-top: 12px;
 }
 .status-badge, .cancel-btn {
     padding: 8px 14px;

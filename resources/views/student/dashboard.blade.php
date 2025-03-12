@@ -24,23 +24,20 @@
                                 </div>
 
                                 <div class="schedule-info">
-                                    <div class="date-time-container">
-                                        <span class="text-sm text-gray-500">Date:</span> 
-                                        <span class="text-gray-700">{{ \Carbon\Carbon::parse($schedule->preferred_date)->format('M d, Y') }}</span> 
-                                    </div>
-                                    <div class="date-time-container">
-                                        <span class="text-sm text-gray-500">Time:</span>
-                                        <span class="text-gray-700">{{ ucfirst($schedule->preferred_time) }}</span>
+                                    <div class="date-time">
+                                        <span><strong>Date:</strong> {{ \Carbon\Carbon::parse($schedule->preferred_date)->format('M d, Y') }}</span> 
+                                        <span><strong>Time:</strong>{{ ucfirst($schedule->preferred_time) }}</span>
                                     </div>
                                 </div>
 
                                 <div class="status-actions">
-                                    <span class="status-badge pending-badge">Pending</span>
-                                    <form action="{{ route('student.schedules.cancel', $schedule->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to cancel this request?');">
+                                    <div class="status-badge pending-badge">Pending</div>
+                                    <form action="{{ route('student.schedules.cancel', $schedule->id) }}" method="POST" 
+                                          onsubmit="return confirm('Are you sure you want to cancel this request?');">
                                         @csrf
                                         <button type="submit" class="cancel-btn">Cancel</button>
                                     </form>
-                                </div>
+                                </div>                                
                             </div>
                         @endforeach
                     @endif
