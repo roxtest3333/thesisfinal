@@ -1,6 +1,7 @@
 @extends('layouts.default')
-<x-messages/>
+
 @section('content')
+<x-messages/>
 <div class="flex justify-center items-center h-full">
     <div class="w-full max-w-3xl bg-white bg-opacity-50 backdrop-blur-sm shadow-lg rounded-lg p-8 sm:px-10">
         <div class="text-center mb-6">
