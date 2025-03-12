@@ -29,35 +29,32 @@ class LoginController extends Controller
     }
 
     public function login(Request $request)
-    {
-        $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
-        ]);
+{
+    $credentials = $request->validate([
+        'email' => 'required|email',
+        'password' => 'required'
+    ]);
 
-        $remember = $request->has('remember');
+    $remember = $request->has('remember');
 
-        // Attempt Admin Login
-        if (Auth::guard('web')->attempt($credentials, $remember)) {
-            $user = Auth::guard('web')->user();
-            return redirect()->intended('/admin/dashboard')->with('message', 'Welcome, ' . $user->name . '!');
-        }
-
-        // Attempt Student Login
-        if (Auth::guard('student')->attempt($credentials, $remember)) {
-            $student = Auth::guard('student')->user();
-
-            // **Check if email verification is required**
-            if (!is_null($student->email_verified_at)) {
-                return redirect()->intended('/student/dashboard')->with('message', 'Welcome, ' . $student->first_name . '!');
-            } else {
-                Auth::guard('student')->logout();
-                return back()->withErrors(['email' => 'Your email is not verified. Please check your inbox.']);
-            }
-        }
-
-        return back()->withErrors(['email' => 'Invalid credentials.'])->withInput();
+    // Check if student email is verified
+    $student = Student::where('email', $request->email)->first();
+    if ($student && !$student->hasVerifiedEmail()) {
+        return back()->withErrors(['email' => 'Please verify your email before logging in.']);
     }
+
+    // Try admin login
+    if (Auth::guard('web')->attempt($credentials, $remember)) {
+        return redirect()->intended('/admin/dashboard')->with('message', 'Welcome, Admin!');
+    }
+
+    // Try student login
+    if (Auth::guard('student')->attempt($credentials, $remember)) {
+        return redirect()->intended('/student/dashboard')->with('message', 'Welcome, ' . Auth::guard('student')->user()->first_name . '!');
+    }
+
+    return back()->withErrors(['email' => 'Invalid credentials'])->withInput();
+}
 
     public function logout(Request $request)
     {

@@ -45,6 +45,6 @@ class StudentRegisterController extends Controller
         // Send verification email
         $student->sendEmailVerificationNotification();
 
-        return redirect()->route('verification.notice')->with('message', 'Registration successful! Please verify your email.');
+        return redirect('/login')->with('message', 'Registration successful! Please check your email to verify your account.');    
     }
 }
