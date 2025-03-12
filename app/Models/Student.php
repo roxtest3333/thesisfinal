@@ -8,11 +8,13 @@ use App\Models\Schedule;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-class Student extends Authenticatable implements CanResetPasswordContract
+class Student extends Authenticatable implements MustVerifyEmail, CanResetPasswordContract
 {
     use HasFactory, Notifiable, CanResetPassword, HasRoles;
-    
+
+
     /**
      * The attributes that are mass assignable.
      *

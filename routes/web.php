@@ -15,6 +15,21 @@ use App\Http\Controllers\Student\ScheduleController as StudentScheduleController
 use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
 use App\Http\Controllers\Student\StudentProfileController;
 use App\Http\Controllers\Admin\ReportController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+
+Route::get('/email/verify', function () {
+    return view('auth.verify-email');
+})->middleware('auth')->name('verification.notice');
+
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+    return redirect('/student/dashboard');
+})->middleware(['auth', 'signed'])->name('verification.verify');
+
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+    return back()->with('message', 'Verification email sent!');
+})->middleware(['auth', 'throttle:6,1'])->name('verification.resend');
 
 // Landing Page
 Route::get('/', function () {
@@ -110,7 +125,7 @@ Route::middleware(['auth:web'])->prefix('admin')->group(function () {
 });
 
     // Student Routes
-Route::middleware(['auth:student'])->prefix('student')->group(function () {
+    Route::middleware(['auth:student'])->prefix('student')->group(function () {
     Route::get('/dashboard', [StudentDashboardController::class, 'index'])->name('student.dashboard');
     Route::get('/schedule', [StudentScheduleController::class, 'create'])->name('student.schedules.create');
     Route::post('/schedule', [StudentScheduleController::class, 'store'])->name('student.schedules.store');

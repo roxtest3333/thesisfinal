@@ -30,5 +30,5 @@ class AppServiceProvider extends ServiceProvider
     Log::info('Application boot completed');
     Paginator::useTailwind();
 }
-
+    public const HOME = '/student/dashboard';
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\Student;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -25,29 +26,25 @@ class StudentRegisterController extends Controller
             'course' => ['required', 'string'],
             'contact_number' => ['required', 'digits:11', 'numeric'],
             'password' => ['required', 'min:6', 'confirmed'],
-        ], [
-            'student_id.regex' => 'Student ID must be in the format XX-XXXXX.',
-            'first_name.regex' => 'First name must contain only letters (A-Z, a-z).',
-            'last_name.regex' => 'Last name must contain only letters (A-Z, a-z).',
-            'contact_number.digits' => 'Contact number must be exactly 11 digits.',
-            'contact_number.numeric' => 'Contact number must contain only numbers.',
-            'password.confirmed' => 'Passwords do not match.',
         ]);
 
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }
 
-        Student::create([
+        $student = Student::create([
             'student_id' => $request->student_id,
-            'first_name' => ucfirst(strtolower($request->first_name)), // Capitalize first letter
-            'last_name' => ucfirst(strtolower($request->last_name)), // Capitalize first letter
+            'first_name' => ucfirst(strtolower($request->first_name)),
+            'last_name' => ucfirst(strtolower($request->last_name)),
             'email' => strtolower($request->email),
             'course' => strtoupper($request->course),
             'contact_number' => $request->contact_number,
             'password' => Hash::make($request->password),
         ]);
 
-        return redirect('/login')->with('message', 'Registration Successful! Please log in.');
+        // Send verification email
+        $student->sendEmailVerificationNotification();
+
+        return redirect()->route('verification.notice')->with('message', 'Registration successful! Please verify your email.');
     }
 }
