@@ -1,138 +1,8 @@
-/* Schedule Box - General */
-.schedule-box {
-    background: rgba(245, 245, 245, 0.95);
-    backdrop-filter: blur(15px); /* Mild blur effect */
-    border-radius: 10px;
-    padding: 1.25rem;
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.08);/* Soft shadow for depth */
-    transition: all 0.3s ease-in-out;
-}
+/* =========================== */
+/* HEADER & GENERAL LAYOUT */
+/* =========================== */
 
-.schedule-box:hover {
-    background: rgba(235, 235, 235, 1); /* Darker on hover */
-    transform: scale(1.02);
-}
-.stat-card-title {
-    font-size: 1.75rem;
-    color: rgb(229, 231, 235) !important; 
-    font-weight: 600;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-    margin-bottom: 1rem;
-}
-
-.date-time-container {
-    display: flex;
-    gap: 8px; /* Adjust spacing between Date and Time */
-}
-
-/* File Name Row */
-.file-name {
-    font-size: 1.125rem;
-    font-weight: 700;
-    color: #1f2937; /* Dark gray */
-    margin-bottom: 8px;
-}
-
-/* Date & Time in the Same Row */
-.schedule-info {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 8px;
-}
-.status-row {
-    margin-bottom: 4px;
-}
-/* Status and Cancel Button */
-.status-actions {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-/* Pending Badge */
-.status-badge {
-    padding: 6px 14px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    border-radius: 999px;
-    color: white;
-}
-
-.pending-badge {
-    background-color: #facc15; /* Yellow */
-}
-
-/* Cancel Button */
-.cancel-btn {
-    background-color: #ef4444;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-}
-
-.cancel-btn:hover {
-    background-color: #dc2626;
-    transform: scale(1.05);
-}
-
-.rejected-box {
-    background: rgba(250, 200, 200, 0.95); 
-    border: 1px solid #f87171;
-
-/* Rejected Badge */
-.rejected-badge {
-    background-color: #ef4444;
-}
-
-/* Rejection Reason */
-.rejection-reason {
-    font-size: 0.875rem;
-    color: #991b1b;
-    margin-top: 4px;
-    padding: 6px 12px;
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 6px;
-    border-left: 4px solid #dc2626;
-}
-
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-    .schedule-info {
-        flex-direction: column;
-    }
-
-    .status-actions {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .cancel-btn {
-        width: 100%;
-        margin-top: 6px;
-    }
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.fade-in {
-    opacity: 0;
-    animation: fadeIn 0.6s ease-out forwards;
-}
-
+/* Dashboard container */
 .dashboard-container {
     max-width: 80rem;
     margin-left: auto;
@@ -157,139 +27,171 @@ body::before {
 
 /* Header Section */
 .dashboard-header {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-}
-
-.dashboard-title {
-    font-size: 2.25rem;
-    font-weight: 800;
-    margin-bottom: 1rem;
-    color: white;
-    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.4));
-}
-
-.dashboard-subtitle {
-    font-size: 1.125rem;
-    color: rgb(229, 231, 235); /* Lighter shade for better readability */
-    font-weight: 500;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); /* Slight shadow to make text stand out */
-}
-
-/* Card Grid Layout */
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(1, 1fr);
-    gap: 1.5rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1.2rem; /* Decrease space below header */
     position: relative;
     z-index: 2;
 }
 
+.dashboard-title {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem; /* Reduce gap */
+    color: white;
+    filter: drop-shadow(0 3px 3px rgb(0 0 0 / 0.4));
+}
+
+.dashboard-subtitle {
+    font-size: 1rem;
+    color: rgb(229, 231, 235); /* Lighter shade for readability */
+    font-weight: 500;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); 
+}
+
+/* =========================== */
+/* REQUEST SECTIONS */
+/* =========================== */
+
+/* Section Titles */
+.stat-card-title {
+    font-size: 1.25rem;
+    color: rgb(229, 231, 235) !important;
+    font-weight: 600;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    margin-bottom: 1rem; /* More space between title and first request */
+}
+
+/* Adjust spacing between request sections */
 .schedule-card {
-    border: none !important; 
     display: flex;
     flex-direction: column;
-    gap: 1.5rem; /* Increase spacing between request boxes */
+    gap: 1.5rem; /* Increased space between "Pending" and "Rejected" */
 }
 
+/* =========================== */
+/* REQUEST BOXES */
+/* =========================== */
 
+/* General request box */
+.schedule-box {
+    background: rgba(240, 240, 240, 0.95); /* Slightly darker than white */
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 5px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease-in-out;
+}
 
-/* Schedule Item Styles */
-.schedule-list {
+.schedule-box:hover {
+    background: rgba(230, 230, 230, 1);
+    transform: scale(1.02);
+}
+
+/* File Name Styling */
+.file-name {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 10px; /* Extra spacing */
+}
+
+/* Date & Time Row */
+.schedule-info {
     display: flex;
-    flex-direction: column;
-    gap: 1rem;
+    justify-content: space-between;
+    margin-bottom: 8px;
 }
 
-.schedule-item {
-    padding: 1rem 0;
+/* Adjust spacing between Date and Time */
+.date-time-container {
+    display: flex;
+    gap: 8px;
 }
 
-.schedule-item-header {
-    margin-bottom: 0.5rem;
-}
+/* =========================== */
+/* STATUS & ACTION BUTTONS */
+/* =========================== */
 
-.schedule-item-content {
-    margin-bottom: 0.75rem;
-}
-
-/* Status and actions container - fixed alignment */
-.status-actions-container {
+/* Status and Cancel Button Row */
+.status-actions {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-top: 8px;
-}
-.status-actions-container form {
-    margin-bottom: 0; /* Remove the extra spacing */
-    display: block; /* Ensure the form behaves as a block element */
+    gap: 6px;
 }
 
-/* Status badge styling */
+/* Status Badges */
 .status-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    height: 36px;
-    padding: 0 16px;
+    padding: 6px 14px;
+    font-size: 0.85rem;
+    font-weight: 600;
     border-radius: 999px;
-    font-weight: 600;
-    font-size: 0.875rem;
     color: white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* Pending Badge */
 .pending-badge {
-    background-color: #d97706; /* Amber-600 */
+    background-color: #facc15;
 }
 
-/* Cancel button styling */
+/* Cancel Button */
 .cancel-btn {
-    height: 32px; /* Match badge height */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 6px 16px; /* Adjust padding */
-    border-radius: 999px; /* Rounded button */
-    font-weight: 600;
-    font-size: 0.875rem;
+    background-color: #ef4444;
     color: white;
-    background-color: #e3342f; /* Red color */
     border: none;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: 6px;
     cursor: pointer;
-    transition: all 0.2s ease-in-out;
+    transition: all 0.3s ease-in-out;
 }
 
 .cancel-btn:hover {
-    background-color: #cc1f1a; /* Darker red on hover */
+    background-color: #dc2626;
     transform: scale(1.05);
 }
 
-/* Divider line between items */
-.request-divider {
-    height: 1px;
-    background-color: #e5e7eb;
-    margin: 1rem 0;
-    width: 100%;
+/* =========================== */
+/* REJECTED REQUESTS */
+/* =========================== */
+
+/* Rejected Request Box */
+.rejected-box {
+    background: rgba(250, 200, 200, 0.95);
+    border: 1px solid #f87171;
 }
 
-/* Responsive Adjustments */
-@media (min-width: 768px) {
-    .dashboard-grid {
-        grid-template-columns: repeat(1, 1fr);
-    }
+/* Rejected Badge */
+.rejected-badge {
+    background-color: #ef4444;
 }
 
-@media (max-width: 640px) {
-    .schedule-item {
-        padding: 0.75rem 0;
+/* Rejection Reason */
+.rejection-reason {
+    font-size: 0.875rem;
+    color: #991b1b;
+    margin-top: 4px;
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 6px;
+    border-left: 4px solid #dc2626;
+}
+
+/* =========================== */
+/* RESPONSIVE FIXES */
+/* =========================== */
+
+@media (max-width: 768px) {
+    .schedule-info {
+        flex-direction: column;
     }
-    
-    .status-actions-container {
+
+    .status-actions {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .cancel-btn {
         width: 100%;
-        justify-content: flex-start;
+        margin-top: 6px;
     }
-}
 }
