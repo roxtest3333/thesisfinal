@@ -21,18 +21,15 @@ class LoginController extends Controller
     }
 
     public function showLoginForm(Request $request)
-    {
-        // Force logout before showing login page
-        Auth::guard('web')->logout();
-        Auth::guard('student')->logout();
-
-        // Invalidate session and regenerate CSRF token
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return redirect('/login')->with('message', 'Logout Successful');
+{
+    if (session()->has('message')) {
+        session()->flash('message', session('message')); // Persist message session
     }
 
+    return view('auth.login');
+}
+
+ 
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -83,7 +80,6 @@ class LoginController extends Controller
         $student = Student::findOrFail($id);
         
         // Simple verification - just verify any student who clicks this link
-        // This is a temporary solution to get things working
         $student->email_verified_at = now();
         $student->save();
         
