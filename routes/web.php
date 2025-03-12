@@ -17,8 +17,10 @@ use App\Http\Controllers\Student\StudentProfileController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Models\Student;
 
+
 // Email verification routes
 Route::get('/email/verify/{id}/{hash}', [LoginController::class, 'verifyEmail'])
+    ->middleware('signed')
     ->name('verification.verify');
     
 Route::post('/email/verification-notification', [LoginController::class, 'resendVerificationEmail'])
