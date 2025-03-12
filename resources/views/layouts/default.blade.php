@@ -24,7 +24,7 @@
       style="background-image: url('{{ secure_asset('images/bg-login-register.jpg') }}');">
 
     <x-nav/>
-    <x-messages/>
+        <x-messages/>
 
     
         <!-- Main Content Section -->
