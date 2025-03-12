@@ -120,9 +120,8 @@ body::before {
 .status-actions {
     display: flex;
     flex-direction: column; /* Stacks items vertically */
-    align-items: center; /* Centers them */
-    gap: 8px; /* Controls spacing */
-    margin-top: 12px;
+    align-items: flex-start; 
+    gap: 4px; /* Controls spacing */
 }
 .status-badge, .cancel-btn {
     padding: 8px 14px;
