@@ -121,7 +121,8 @@ body::before {
     display: flex;
     flex-direction: column; /* Stacks items vertically */
     align-items: flex-start; 
-    gap: 4px; /* Controls spacing */
+    gap: 8px; /* Controls spacing */
+    margin-bottom: 0px;
 }
 .status-badge, .cancel-btn {
     padding: 8px 14px;
