@@ -69,13 +69,10 @@ class LoginController extends Controller
         } else {
             Auth::guard('student')->logout();
         }
-
-        // Invalidate session and regenerate CSRF token
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
+    
         return redirect('/login')->with('message', 'Logout Successful');
     }
+    
     
     public function verifyEmail(Request $request, $id, $hash)
     {
