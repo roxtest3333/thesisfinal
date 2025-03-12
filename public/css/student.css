@@ -1,7 +1,4 @@
-/* =========================== */
-/* HEADER & GENERAL LAYOUT */
-/* =========================== */
-
+/* General Page Styling */
 .dashboard-container {
     max-width: 80rem;
     margin-left: auto;
@@ -26,113 +23,111 @@ body::before {
 
 /* Header Section */
 .dashboard-header {
-    margin-bottom: 1.2rem;
+    margin-bottom: 1.5rem; /* Reduced space */
     position: relative;
     z-index: 2;
+    text-align: center;
 }
 
 .dashboard-title {
-    font-size: 2rem;
+    font-size: 2.25rem;
     font-weight: 800;
     margin-bottom: 0.5rem;
     color: white;
-    filter: drop-shadow(0 3px 3px rgb(0 0 0 / 0.4));
+    filter: drop-shadow(0 4px 3px rgba(0, 0, 0, 0.4));
 }
 
 .dashboard-subtitle {
-    font-size: 1rem;
+    font-size: 1.125rem;
     color: rgb(229, 231, 235);
     font-weight: 500;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
-/* =========================== */
-/* REQUEST SECTIONS - TWO COLUMNS */
-/* =========================== */
-
+/* Grid Layout - Two Columns for Desktop */
 .dashboard-grid {
     display: grid;
-    grid-template-columns: 1fr; /* Default single column for mobile */
+    grid-template-columns: 1fr;
     gap: 1.5rem;
     margin-bottom: 2rem;
     position: relative;
     z-index: 2;
 }
 
-@media (min-width: 1024px) {
+/* Desktop: Two Columns */
+@media (min-width: 768px) {
     .dashboard-grid {
-        grid-template-columns: repeat(2, 1fr); /* Two-column layout on desktop */
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
-/* =========================== */
-/* REQUEST BOXES */
-/* =========================== */
+/* Section Titles */
+.stat-card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: white;
+    text-align: center;
+    margin-bottom: 1rem;
+}
 
+/* Schedule Box - General */
 .schedule-box {
-    background: rgba(240, 240, 240, 0.95);
+    background: rgba(240, 240, 240, 0.85);
     backdrop-filter: blur(10px);
     border-radius: 10px;
-    padding: 1.5rem;
-    box-shadow: 0 5px 8px rgba(0, 0, 0, 0.08);
+    padding: 1.25rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     transition: all 0.3s ease-in-out;
 }
 
 .schedule-box:hover {
-    background: rgba(230, 230, 230, 1);
+    background: rgba(240, 240, 240, 0.95);
     transform: scale(1.02);
 }
 
-/* Increase spacing between sections */
-.stat-card-title {
-    font-size: 1.25rem;
-    color: rgb(229, 231, 235) !important;
-    font-weight: 600;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-    margin-bottom: 1.2rem; /* More space before first request */
-}
-
-/* Increased spacing between different requests */
+/* Pending and Rejected Cards */
 .schedule-card {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
+    border: none;
 }
 
-/* =========================== */
-/* PENDING REQUESTS */
-/* =========================== */
-
-/* Align elements properly inside pending requests */
+/* File Name Row */
 .file-name {
     font-size: 1.125rem;
     font-weight: 700;
     color: #1f2937;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 }
 
-/* Date & Time - Aligned properly */
+/* Date & Time Styling */
 .schedule-info {
     display: flex;
     justify-content: space-between;
     margin-bottom: 12px;
-    align-items: center;
 }
 
-/* Adjust spacing between Date and Time */
+/* Date & Time Row */
 .date-time-container {
     display: flex;
     gap: 10px;
 }
 
-/* Align status and button properly */
+/* Status and Actions (Pending & Cancel) */
 .status-actions {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
 }
 
-/* Pending Badge */
+/* Status Badge Styling */
+.status-badge {
+    padding: 6px 14px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: 999px;
+    color: white;
+}
+
+/* Pending Status */
 .pending-badge {
     background-color: #facc15;
 }
@@ -155,18 +150,10 @@ body::before {
     transform: scale(1.05);
 }
 
-/* =========================== */
-/* REJECTED REQUESTS */
-/* =========================== */
-
+/* Rejected Box */
 .rejected-box {
-    background: rgba(250, 200, 200, 0.95);
-    border: 1px solid #f87171;
-}
-
-/* Increased space between status rejected and reason */
-.status-row {
-    margin-bottom: 10px;
+    background-color: #fee2e2;
+    border: 1px solid #fca5a5;
 }
 
 /* Rejected Badge */
@@ -174,30 +161,21 @@ body::before {
     background-color: #ef4444;
 }
 
-/* Increase spacing between date/time and status */
-.rejected-info {
-    margin-bottom: 12px;
-}
-
 /* Rejection Reason */
 .rejection-reason {
     font-size: 0.875rem;
     color: #991b1b;
-    margin-top: 8px;
-    padding: 8px 12px;
+    margin-top: 10px;
+    padding: 6px 12px;
     background: rgba(255, 255, 255, 0.9);
     border-radius: 6px;
     border-left: 4px solid #dc2626;
 }
 
-/* =========================== */
-/* RESPONSIVE FIXES */
-/* =========================== */
-
+/* Responsive Adjustments */
 @media (max-width: 768px) {
     .schedule-info {
         flex-direction: column;
-        align-items: flex-start;
     }
 
     .status-actions {
@@ -209,4 +187,20 @@ body::before {
         width: 100%;
         margin-top: 6px;
     }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    opacity: 0;
+    animation: fadeIn 0.6s ease-out forwards;
 }
