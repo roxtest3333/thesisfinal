@@ -1,23 +1,25 @@
 /* Schedule Box - General */
 .schedule-box {
-    background: rgba(255, 255, 255, 0.85); /* Soft white with slight transparency */
-    backdrop-filter: blur(10px); /* Mild blur effect */
+    background: rgba(245, 245, 245, 0.95);
+    backdrop-filter: blur(15px); /* Mild blur effect */
     border-radius: 10px;
-    padding: 1rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* Soft shadow for depth */
+    padding: 1.25rem;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.08);/* Soft shadow for depth */
     transition: all 0.3s ease-in-out;
 }
 
 .schedule-box:hover {
-    background: rgba(255, 255, 255, 0.9); /* Slightly stronger white on hover */
+    background: rgba(235, 235, 235, 1); /* Darker on hover */
     transform: scale(1.02);
 }
 .stat-card-title {
     font-size: 1.75rem;
-    color: rgb(229, 231, 235) important;
+    color: rgb(229, 231, 235) !important; 
     font-weight: 600;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    margin-bottom: 1rem;
 }
+
 .date-time-container {
     display: flex;
     gap: 8px; /* Adjust spacing between Date and Time */
@@ -78,11 +80,9 @@
     transform: scale(1.05);
 }
 
-/* Rejected Box */
 .rejected-box {
-    background-color: #fee2e2;
-    border: 1px solid #fca5a5;
-}
+    background: rgba(250, 200, 200, 0.95); 
+    border: 1px solid #f87171;
 
 /* Rejected Badge */
 .rejected-badge {
@@ -157,9 +157,9 @@ body::before {
 
 /* Header Section */
 .dashboard-header {
-    margin-bottom: 2rem;
-    position: relative;
-    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
 }
 
 .dashboard-title {
@@ -189,6 +189,9 @@ body::before {
 
 .schedule-card {
     border: none !important; 
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem; /* Increase spacing between request boxes */
 }
 
 
