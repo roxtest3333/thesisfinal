@@ -1,0 +1,291 @@
+/* Schedule Box - General */
+.schedule-box {
+    background: rgba(255, 255, 255, 0.85); /* Soft white with slight transparency */
+    backdrop-filter: blur(10px); /* Mild blur effect */
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* Soft shadow for depth */
+    transition: all 0.3s ease-in-out;
+}
+
+.schedule-box:hover {
+    background: rgba(255, 255, 255, 0.9); /* Slightly stronger white on hover */
+    transform: scale(1.02);
+}
+.stat-card-title {
+    font-size: 1.75rem;
+    color: rgb(229, 231, 235) important;
+    font-weight: 600;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+.date-time-container {
+    display: flex;
+    gap: 8px; /* Adjust spacing between Date and Time */
+}
+
+/* File Name Row */
+.file-name {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #1f2937; /* Dark gray */
+    margin-bottom: 8px;
+}
+
+/* Date & Time in the Same Row */
+.schedule-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+.status-row {
+    margin-bottom: 4px;
+}
+/* Status and Cancel Button */
+.status-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Pending Badge */
+.status-badge {
+    padding: 6px 14px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: 999px;
+    color: white;
+}
+
+.pending-badge {
+    background-color: #facc15; /* Yellow */
+}
+
+/* Cancel Button */
+.cancel-btn {
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.cancel-btn:hover {
+    background-color: #dc2626;
+    transform: scale(1.05);
+}
+
+/* Rejected Box */
+.rejected-box {
+    background-color: #fee2e2;
+    border: 1px solid #fca5a5;
+}
+
+/* Rejected Badge */
+.rejected-badge {
+    background-color: #ef4444;
+}
+
+/* Rejection Reason */
+.rejection-reason {
+    font-size: 0.875rem;
+    color: #991b1b;
+    margin-top: 4px;
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 6px;
+    border-left: 4px solid #dc2626;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .schedule-info {
+        flex-direction: column;
+    }
+
+    .status-actions {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .cancel-btn {
+        width: 100%;
+        margin-top: 6px;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    opacity: 0;
+    animation: fadeIn 0.6s ease-out forwards;
+}
+
+.dashboard-container {
+    max-width: 80rem;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    position: relative;
+    z-index: 10;
+}
+
+/* Background Overlay */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+
+/* Header Section */
+.dashboard-header {
+    margin-bottom: 2rem;
+    position: relative;
+    z-index: 2;
+}
+
+.dashboard-title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    color: white;
+    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.4));
+}
+
+.dashboard-subtitle {
+    font-size: 1.125rem;
+    color: rgb(229, 231, 235); /* Lighter shade for better readability */
+    font-weight: 500;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); /* Slight shadow to make text stand out */
+}
+
+/* Card Grid Layout */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    position: relative;
+    z-index: 2;
+}
+
+.schedule-card {
+    border: none !important; 
+}
+
+
+
+/* Schedule Item Styles */
+.schedule-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.schedule-item {
+    padding: 1rem 0;
+}
+
+.schedule-item-header {
+    margin-bottom: 0.5rem;
+}
+
+.schedule-item-content {
+    margin-bottom: 0.75rem;
+}
+
+/* Status and actions container - fixed alignment */
+.status-actions-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+}
+.status-actions-container form {
+    margin-bottom: 0; /* Remove the extra spacing */
+    display: block; /* Ensure the form behaves as a block element */
+}
+
+/* Status badge styling */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 36px;
+    padding: 0 16px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.pending-badge {
+    background-color: #d97706; /* Amber-600 */
+}
+
+/* Cancel button styling */
+.cancel-btn {
+    height: 32px; /* Match badge height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 16px; /* Adjust padding */
+    border-radius: 999px; /* Rounded button */
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: white;
+    background-color: #e3342f; /* Red color */
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.cancel-btn:hover {
+    background-color: #cc1f1a; /* Darker red on hover */
+    transform: scale(1.05);
+}
+
+/* Divider line between items */
+.request-divider {
+    height: 1px;
+    background-color: #e5e7eb;
+    margin: 1rem 0;
+    width: 100%;
+}
+
+/* Responsive Adjustments */
+@media (min-width: 768px) {
+    .dashboard-grid {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .schedule-item {
+        padding: 0.75rem 0;
+    }
+    
+    .status-actions-container {
+        width: 100%;
+        justify-content: flex-start;
+    }
+}
