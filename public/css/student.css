@@ -72,6 +72,9 @@ body::before {
 
 /* Schedule Box - General */
 .schedule-box {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
     background: rgba(240, 240, 240, 0.85);
     backdrop-filter: blur(10px);
     border-radius: 10px;
@@ -92,6 +95,7 @@ body::before {
 
 /* File Name Row */
 .file-name {
+    text-align: left;
     font-size: 1.125rem;
     font-weight: 700;
     color: #1f2937;
@@ -102,6 +106,7 @@ body::before {
 .schedule-info {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     margin-bottom: 12px;
 }
 
@@ -115,7 +120,8 @@ body::before {
 .status-actions {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px; /* Add space between Pending & Cancel */
+    margin-top: 12px; /* Add space from Date/Time */
 }
 
 /* Status Badge Styling */
