@@ -16,6 +16,7 @@ class LoginController extends Controller
 {
     public function showLogin()
     {
+        dd(session()->all());
         return view('auth.login', ['title' => 'Login Page']);
     }
 
@@ -70,7 +71,7 @@ class LoginController extends Controller
             Auth::guard('student')->logout();
         }
     
-        //  Ensure message persists for the next request
+        // 🔥 Ensure message persists for the next request
         session()->flash('message', 'Logout Successful');
     
         return redirect('/login');
