@@ -1,5 +1,5 @@
 <?php
-
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\StudentRegisterController;
 use App\Http\Controllers\Auth\AdminRegisterController;
@@ -17,19 +17,16 @@ use App\Http\Controllers\Student\StudentProfileController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Models\Student;
 
-Route::get('/email/verify/{id}/{hash}', function ($id, $hash) {
-    $student = Student::findOrFail($id);
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $student = Student::findOrFail($request->id);
 
-    if (!Hash::check($student->getKey(), $hash)) {
-        return redirect('/login')->with('error', 'Invalid verification link.');
-    }
-
+    // Manually mark the email as verified if not already
     if (!$student->hasVerifiedEmail()) {
-        $student->markEmailAsVerified(); // ✅ This marks the email as verified
+        $student->markEmailAsVerified();
     }
 
     return redirect('/login')->with('message', 'Email verified successfully! You can now log in.');
-})->name('verification.verify');
+})->middleware(['signed'])->name('verification.verify');
 Route::get('/email/verify', function () {
     return view('auth.verify-email');
 })->middleware('auth')->name('verification.notice');
