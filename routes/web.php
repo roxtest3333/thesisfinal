@@ -16,23 +16,17 @@ use App\Http\Controllers\Student\DashboardController as StudentDashboardControll
 use App\Http\Controllers\Student\StudentProfileController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Models\Student;
-Route::get('/email/verify', function () {
-    return view('auth.verify-email');
-})->middleware('auth')->name('verification.notice');
-
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $student = Student::findOrFail($request->id);
 
     if (!$student->hasVerifiedEmail()) {
         $student->markEmailAsVerified();
+        $student->save(); // Ensure it saves
     }
 
-    Auth::guard('student')->logout(); // Log out the student after verification
-    session()->invalidate();
-    session()->regenerateToken();
-
     return redirect('/login')->with('message', 'Email verified successfully! You can now log in.');
-})->middleware(['auth', 'signed'])->name('verification.verify');
+})->middleware(['signed'])->name('verification.verify'); // Removed 'auth'
+
 // Landing Page
 Route::get('/', function () {
     if (Auth::guard('web')->check()) {
