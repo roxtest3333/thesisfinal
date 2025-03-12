@@ -23,8 +23,8 @@
 <body class="bg-gray-100 text-gray-800 bg-cover bg-center md:bg-fixed m-0 flex flex-col min-h-screen" 
       style="background-image: url('{{ secure_asset('images/bg-login-register.jpg') }}');">
 
-    <x-nav/>
-        <x-messages/>
+      <x-nav/>
+      @includeIf('components.messages')
 
     
         <!-- Main Content Section -->

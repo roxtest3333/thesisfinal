@@ -13,4 +13,8 @@
         <span class="font-medium">{{ session('message') }}</span>
     </div>
 </div>
+@else
+    <div id="debug-messages">
+        <strong>Session Empty!</strong> No message found.
+    </div>
 @endif
