@@ -37,10 +37,11 @@ class LoginController extends Controller
 
     $remember = $request->has('remember');
 
-    // Check if student email is verified
+    // Re-fetch student to check if verified
     $student = Student::where('email', $request->email)->first();
+    
     if ($student && !$student->hasVerifiedEmail()) {
-        return back()->withErrors(['email' => 'Please verify your email before logging in.']);
+        return back()->withErrors(['email' => 'Please verify your email before logging in.'])->withInput();
     }
 
     // Try admin login

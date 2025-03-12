@@ -23,13 +23,12 @@ Route::get('/email/verify', function () {
 
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
-    return redirect('/login')->with('message', 'Email verified successfully. You can now log in.');
+    Auth::guard('student')->logout();
+    session()->invalidate();
+    session()->regenerateToken();
+    return redirect('/login')->with('message', 'Email verified successfully! You can now log in.');
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
-Route::post('/email/verification-notification', function (Request $request) {
-    $request->user()->sendEmailVerificationNotification();
-    return back()->with('message', 'Verification email sent!');
-})->middleware(['auth', 'throttle:6,1'])->name('verification.resend');
 
 // Landing Page
 Route::get('/', function () {
