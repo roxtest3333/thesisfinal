@@ -334,6 +334,39 @@
     }
 </style>
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    
+        document.querySelectorAll('.btn-success, .btn-danger').forEach(button => {
+            
+            button.addEventListener('mouseenter', function() {
+        
+                const row = this.closest('tr');
+                if (row) {
+                 
+                    const studentLink = row.querySelector('.student-link');
+                    if (studentLink) {
+                      
+                        studentLink.classList.add('student-link-highlight');
+                    }
+                }
+            });
+            
+     
+            button.addEventListener('mouseleave', function() {
+               
+                const row = this.closest('tr');
+                if (row) {
+           
+                    const studentLink = row.querySelector('.student-link');
+                    if (studentLink) {
+                       
+                        studentLink.classList.remove('student-link-highlight');
+                    }
+                }
+            });
+        });
+    });
+    
     document.addEventListener('DOMContentLoaded', function () {
         const rejectModal = document.getElementById('rejectModal');
         const rejectForm = document.getElementById('rejectForm');
