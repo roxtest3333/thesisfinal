@@ -37,10 +37,11 @@ class LoginController extends Controller
 
     $remember = $request->has('remember');
 
-    // Re-fetch student to check if verified
+    // Retrieve student record
     $student = Student::where('email', $request->email)->first();
-    
-    if ($student && !$student->hasVerifiedEmail()) {
+
+    //  Fix: Ensure `email_verified_at` is properly checked
+    if ($student && is_null($student->email_verified_at)) {
         return back()->withErrors(['email' => 'Please verify your email before logging in.'])->withInput();
     }
 
@@ -56,7 +57,6 @@ class LoginController extends Controller
 
     return back()->withErrors(['email' => 'Invalid credentials'])->withInput();
 }
-
     public function logout(Request $request)
     {
         if (Auth::guard('web')->check()) {

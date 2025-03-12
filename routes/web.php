@@ -15,21 +15,38 @@ use App\Http\Controllers\Student\ScheduleController as StudentScheduleController
 use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
 use App\Http\Controllers\Student\StudentProfileController;
 use App\Http\Controllers\Admin\ReportController;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use App\Models\Student;
 
+Route::get('/email/verify/{id}/{hash}', function ($id, $hash) {
+    $student = Student::findOrFail($id);
+
+    if (!Hash::check($student->getKey(), $hash)) {
+        return redirect('/login')->with('error', 'Invalid verification link.');
+    }
+
+    if (!$student->hasVerifiedEmail()) {
+        $student->markEmailAsVerified(); // ✅ This marks the email as verified
+    }
+
+    return redirect('/login')->with('message', 'Email verified successfully! You can now log in.');
+})->name('verification.verify');
 Route::get('/email/verify', function () {
     return view('auth.verify-email');
 })->middleware('auth')->name('verification.notice');
 
-Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-    $request->fulfill();
-    Auth::guard('student')->logout();
-    session()->invalidate();
-    session()->regenerateToken();
+Route::get('/email/verify/{id}/{hash}', function ($id, $hash) {
+    $student = Student::findOrFail($id);
+
+    if (!Hash::check($student->getKey(), $hash)) {
+        return redirect('/login')->with('error', 'Invalid verification link.');
+    }
+
+    if (!$student->hasVerifiedEmail()) {
+        $student->markEmailAsVerified(); // ✅ This marks the email as verified
+    }
+
     return redirect('/login')->with('message', 'Email verified successfully! You can now log in.');
-})->middleware(['auth', 'signed'])->name('verification.verify');
-
-
+})->name('verification.verify');
 // Landing Page
 Route::get('/', function () {
     if (Auth::guard('web')->check()) {
