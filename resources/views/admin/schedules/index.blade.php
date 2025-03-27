@@ -29,13 +29,49 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Student</th>
-                        <th>File</th>
-                        <th>Date</th>
+                        <th>
+                            <a href="{{ route('admin.schedules.index', array_merge(request()->query(), [
+                                'sort' => 'student_id', 
+                                'direction' => request('direction', 'asc') == 'asc' ? 'desc' : 'asc'
+                            ])) }}" 
+                            class="sortable {{ request('sort') == 'student_id' ? 'active' : '' }}"
+                            data-direction="{{ request('sort') == 'student_id' ? request('direction', 'asc') : 'asc' }}">
+                                Student
+                            </a>
+                        </th>
+                        <th>
+                            <a href="{{ route('admin.schedules.index', array_merge(request()->query(), [
+                                'sort' => 'file_id', 
+                                'direction' => request('direction', 'asc') == 'asc' ? 'desc' : 'asc'
+                            ])) }}" 
+                            class="sortable {{ request('sort') == 'file_id' ? 'active' : '' }}"
+                            data-direction="{{ request('sort') == 'file_id' ? request('direction', 'asc') : 'asc' }}">
+                                File
+                            </a>
+                        </th>
+                        <th>
+                            <a href="{{ route('admin.schedules.index', array_merge(request()->query(), [
+                                'sort' => 'preferred_date', 
+                                'direction' => request('direction', 'asc') == 'asc' ? 'desc' : 'asc'
+                            ])) }}" 
+                            class="sortable {{ request('sort') == 'preferred_date' ? 'active' : '' }}"
+                            data-direction="{{ request('sort') == 'preferred_date' ? request('direction', 'asc') : 'asc' }}">
+                                Date
+                            </a>
+                        </th>
                         <th>Time</th>
                         <th>Reason</th>
                         <th>Copies</th>
-                        <th>Status</th>
+                        <th>
+                            <a href="{{ route('admin.schedules.index', array_merge(request()->query(), [
+                                'sort' => 'status', 
+                                'direction' => request('direction', 'asc') == 'asc' ? 'desc' : 'asc'
+                            ])) }}" 
+                            class="sortable {{ request('sort') == 'status' ? 'active' : '' }}"
+                            data-direction="{{ request('sort') == 'status' ? request('direction', 'asc') : 'asc' }}">
+                                Status
+                            </a>
+                        </th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -45,7 +81,7 @@
                             <td>
                                 @if($schedule->student)
                                     <a href="{{ route('admin.reports.student', $schedule->student->id) }}" class="student-link">
-                                        {{ $schedule->student->first_name }} {{ $schedule->student->last_name }}
+                                        {{ $schedule->student->first_name ?? 'N/A' }} {{ $schedule->student->last_name ?? '' }}
                                     </a>
                                 @else
                                     N/A
@@ -53,7 +89,7 @@
                             </td>
                             <td>
                                 {{ optional($schedule->file)->file_name ?? 'N/A' }}
-                                @if(in_array(optional($schedule->file)->file_name, ['COR', 'COG']) && $schedule->manual_school_year && $schedule->manual_semester)
+                                @if($schedule->file && in_array($schedule->file->file_name, ['COR', 'COG']) && $schedule->manual_school_year && $schedule->manual_semester)
                                     <br>
                                     <small class="text-gray-500 text-sm">
                                         {{ $schedule->manual_school_year }} - {{ $schedule->manual_semester }}
@@ -79,7 +115,7 @@
                                     </form>
                                     <button type="button" class="btn btn-danger btn-sm reject-btn"
                                         data-schedule-id="{{ $schedule->id }}" 
-                                        data-student-name="{{ $schedule->student->first_name }} {{ $schedule->student->last_name }}">
+                                        data-student-name="{{ optional($schedule->student)->first_name ?? 'Unknown' }} {{ optional($schedule->student)->last_name ?? '' }}">
                                         <i class="fas fa-times"></i> Reject
                                     </button>
                                 </div>
@@ -118,6 +154,31 @@
     </div>
 </div>
 <style>
+    .sortable {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: bold;
+    position: relative;
+    padding-right: 20px;
+}
+
+.sortable::after {
+    content: "▼";
+    font-size: 12px;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.5;
+}
+
+.sortable:hover {
+    text-decoration: underline;
+}
+
+.sortable[data-direction="asc"]::after {
+    content: "▲";
+}
    #rejectModal {
     display: flex;
     align-items: center;

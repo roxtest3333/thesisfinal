@@ -40,39 +40,41 @@
             @endguest
     
             @auth('web')
-                @if(auth()->user()->is_admin == 1)
-                    <li class="hover:text-sky-400 transition-transform transform hover:scale-105">
-                        <a href="{{ route('admin.register') }}" class="block py-2 px-4 text-white rounded-lg transition duration-300 hover:bg-gray-700 hover:text-sky-400">
-                            Admins
-                        </a>
-                    </li>
-                    <li class="hover:text-sky-400 transition-transform transform hover:scale-105">
-                        <a href="{{ route('admin.schedules.index') }}" class="block py-2 px-4 text-white rounded-lg transition duration-300 hover:bg-gray-700 hover:text-sky-400">
-                            Requests
-                        </a>
-                    </li>
-                    <li class="hover:text-sky-400 transition-transform transform hover:scale-105">
-                        <a href="{{ route('admin.reports.index') }}" class="block py-2 px-4 text-white rounded-lg transition duration-300 hover:bg-gray-700 hover:text-sky-400">
-                            Reports
-                        </a>
-                    </li>
-                    <li class="hover:text-sky-400 transition-transform transform hover:scale-105">
-                        <a href="{{ route('admin.students.index')}}" class="block py-2 px-4 text-white rounded-lg transition duration-300 hover:bg-gray-700 hover:text-sky-400">
-                            Students
-                        </a>
-                    </li>
-                    <li class="hover:text-sky-400 transition-transform transform hover:scale-105">
-                        <a href="{{ route('admin.files.index') }}" class="block py-2 px-4 text-white rounded-lg transition duration-300 hover:bg-gray-700 hover:text-sky-400">
-                            Files
-                        </a>
-                    </li>
-                    <li class="hover:text-sky-400 transition-transform transform hover:scale-105">
-                        <a href="{{ route('admin.school-years-semesters.index') }}" class="block py-2 px-4 text-white rounded-lg transition duration-300 hover:bg-gray-700 hover:text-sky-400">
-                            Terms
-                        </a>
-                    </li>                        
-                @endif
-            @endauth
+            @if(auth()->check() && auth()->user()->role === 'superadmin')
+        <li class="hover:text-sky-400 transition-transform transform hover:scale-105">
+            <a href="{{ route('admin.register') }}" class="block py-2 px-4 text-white rounded-lg transition duration-300 hover:bg-gray-700 hover:text-sky-400">
+                Admins
+            </a>
+        </li>
+    @endif
+
+    <li class="hover:text-sky-400 transition-transform transform hover:scale-105">
+        <a href="{{ route('admin.schedules.index') }}" class="block py-2 px-4 text-white rounded-lg transition duration-300 hover:bg-gray-700 hover:text-sky-400">
+            Requests
+        </a>
+    </li>
+    <li class="hover:text-sky-400 transition-transform transform hover:scale-105">
+        <a href="{{ route('admin.reports.index') }}" class="block py-2 px-4 text-white rounded-lg transition duration-300 hover:bg-gray-700 hover:text-sky-400">
+            Reports
+        </a>
+    </li>
+    <li class="hover:text-sky-400 transition-transform transform hover:scale-105">
+        <a href="{{ route('admin.students.index')}}" class="block py-2 px-4 text-white rounded-lg transition duration-300 hover:bg-gray-700 hover:text-sky-400">
+            Students
+        </a>
+    </li>
+    <li class="hover:text-sky-400 transition-transform transform hover:scale-105">
+        <a href="{{ route('admin.files.index') }}" class="block py-2 px-4 text-white rounded-lg transition duration-300 hover:bg-gray-700 hover:text-sky-400">
+            Files
+        </a>
+    </li>
+    <li class="hover:text-sky-400 transition-transform transform hover:scale-105">
+        <a href="{{ route('admin.school-years-semesters.index') }}" class="block py-2 px-4 text-white rounded-lg transition duration-300 hover:bg-gray-700 hover:text-sky-400">
+            Terms
+        </a>
+    </li>
+@endauth
+
     
             @auth('student')
                 <li class="hover:text-sky-400 transition-transform transform hover:scale-105">

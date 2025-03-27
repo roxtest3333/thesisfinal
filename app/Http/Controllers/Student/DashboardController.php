@@ -30,18 +30,18 @@ class DashboardController extends Controller
     return view('student.dashboard', compact('pendingSchedules', 'rejectedSchedules'));
 }
 
-    public function studentHistory()
-    {
-        $student = Auth::guard('student')->user();
-    
-        // Fetch completed schedules (past requests)
-        $completedSchedules = Schedule::where('student_id', $student->id)
-            ->whereDate('preferred_date', '<', now()) // Only past requests
-            ->orderBy('preferred_date', 'desc')
-            ->get();
-    
-        return view('student.history', compact('completedSchedules'));
-    }
+public function studentHistory()
+{
+    $student = Auth::guard('student')->user();
+
+    // Fetch all schedule requests for the student, ordered by date (most recent first)
+    $allSchedules = Schedule::where('student_id', $student->id)
+        ->orderBy('preferred_date', 'desc')
+        ->get();
+
+    return view('student.history', compact('allSchedules'));
+}
+
     public function cancelRequest($id)
     {
     $student = Auth::guard('student')->user();

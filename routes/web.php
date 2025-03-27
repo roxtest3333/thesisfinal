@@ -110,26 +110,36 @@ Route::middleware(['auth:web'])->prefix('admin')->group(function () {
    // School Year
     Route::get('/school-years-semesters', [SchoolYearSemesterController::class, 'index'])->name('admin.school-years-semesters.index');
     Route::post('/school-years', [SchoolYearSemesterController::class, 'storeSchoolYear'])->name('admin.school-years.store');
-    Route::delete('/admin/school-years/{id}', [SchoolYearSemesterController::class, 'destroySchoolYear'])->name('admin.school-years.destroy');
+    Route::delete('/school-years/{id}', [SchoolYearSemesterController::class, 'destroySchoolYear'])->name('admin.school-years.destroy');
     // Semester Routes
     Route::post('/semesters', [SchoolYearSemesterController::class, 'storeSemester'])->name('admin.semesters.store');
-    Route::delete('/admin/semesters/{id}', [SchoolYearSemesterController::class, 'destroySemester'])->name('admin.semesters.destroy');
+    Route::delete('/semesters/{id}', [SchoolYearSemesterController::class, 'destroySemester'])->name('admin.semesters.destroy');
 
-    // Admin Registration (Only for other admins)
-    Route::get('/register', [AdminRegisterController::class, 'showRegistrationForm'])->name('admin.register');
-    Route::post('/register', [AdminRegisterController::class, 'register']);
+    
+    Route::middleware(['superadmin'])->group(function () {
+        Route::get('/register', [AdminRegisterController::class, 'showRegistrationForm'])->name('admin.register');
+        Route::post('/register', [AdminRegisterController::class, 'register']);
+    });
 });
+
+
 
     // Student Routes
     Route::middleware(['auth:student'])->prefix('student')->group(function () {
     Route::get('/dashboard', [StudentDashboardController::class, 'index'])->name('student.dashboard');
+    
     Route::get('/schedule', [StudentScheduleController::class, 'create'])->name('student.schedules.create');
     Route::post('/schedule', [StudentScheduleController::class, 'store'])->name('student.schedules.store');
+    Route::post('/student/schedules/{id}/cancel', [StudentScheduleController::class, 'cancelRequest'])->name('student.schedules.cancel');
+
     Route::get('/profile', [StudentProfileController::class, 'show'])->name('student.profile.show');
     Route::get('/profile/edit', [StudentProfileController::class, 'edit'])->name('student.profile.edit');
     Route::put('/profile', [StudentProfileController::class, 'update'])->name('student.profile.update');
     Route::get('/student/history', [App\Http\Controllers\Student\DashboardController::class, 'studentHistory'])->name('student.history');
-    Route::post('/student/schedules/{id}/cancel', [StudentScheduleController::class, 'cancelRequest'])->name('student.schedules.cancel');});
+ });   
+ Route::get('/csrf-token', function() {
+    return csrf_token();
+});
     
 /* Route::get('/debug-log', function() {
     return response()->file(storage_path('logs/laravel.log'));

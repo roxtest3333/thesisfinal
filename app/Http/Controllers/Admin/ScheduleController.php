@@ -14,32 +14,72 @@ class ScheduleController extends Controller
 {
     public function index(Request $request)
     {
+        $query = Schedule::with(['student', 'file', 'schoolYear', 'semester']);
+    
+        // Fetch dropdown options
         $files = File::all();
         $schoolYears = SchoolYear::all();
         $semesters = Semester::all();
     
         // Get sorting parameters
-        $sortField = $request->get('sort', 'created_at'); // Default sort by created_at
-        $sortDirection = $request->get('direction', 'desc'); // Default to descending
+        $sortField = $request->get('sort', 'created_at');
+        $sortDirection = $request->get('direction', 'desc');
     
         // Validate sort field
-        $allowedSortFields = ['created_at', 'preferred_date', 'status', 'student_id'];
-        if (!in_array($sortField, $allowedSortFields)) {
-            $sortField = 'created_at';
+        $allowedSortFields = [
+            'created_at', 
+            'preferred_date', 
+            'status', 
+            'student_id', 
+            'file_id'
+        ];
+        $sortField = in_array($sortField, $allowedSortFields) ? $sortField : 'created_at';
+    
+        // Apply filters
+        if ($request->file_id) {
+            $query->where('file_id', $request->file_id);
         }
     
-        $schedules = Schedule::with(['student', 'file', 'schoolYear'])
-            ->join('semesters', 'schedules.semester_id', '=', 'semesters.id')
-            ->select('schedules.*', 'semesters.name as semester_name')
-            ->when($request->file_id, fn($query) => $query->where('schedules.file_id', $request->file_id))
-            ->when($request->status, fn($query) => $query->where('schedules.status', $request->status))
-            ->when($request->school_year_id, fn($query) => $query->where('schedules.school_year_id', $request->school_year_id))
-            ->when($request->semester_id, fn($query) => $query->where('schedules.semester_id', $request->semester_id))
-            ->where('schedules.status', '!=', 'canceled') 
-            ->orderBy($sortField, $sortDirection)
-            ->paginate(10);
+        if ($request->status) {
+            $query->where('status', $request->status);
+        }
     
-        return view('admin.schedules.index', compact('schedules', 'files', 'schoolYears', 'semesters', 'sortField', 'sortDirection'));
+        if ($request->school_year_id) {
+            $query->where('school_year_id', $request->school_year_id);
+        }
+    
+        if ($request->semester_id) {
+            $query->where('semester_id', $request->semester_id);
+        }
+    
+        // Exclude canceled schedules
+        $query->where('status', '!=', 'canceled');
+    
+        // Dynamic sorting
+        if ($sortField === 'student_id') {
+            $query->join('students', 'schedules.student_id', '=', 'students.id')
+                ->select('schedules.*')
+                ->orderBy('students.first_name', $sortDirection)
+                ->orderBy('students.last_name', $sortDirection);
+        } elseif ($sortField === 'file_id') {
+            $query->join('files', 'schedules.file_id', '=', 'files.id')
+                ->select('schedules.*')
+                ->orderBy('files.file_name', $sortDirection);
+        } else {
+            $query->orderBy($sortField, $sortDirection);
+        }
+    
+        // Paginate results
+        $schedules = $query->paginate(10);
+    
+        return view('admin.schedules.index', compact(
+            'schedules', 
+            'files', 
+            'schoolYears', 
+            'semesters', 
+            'sortField', 
+            'sortDirection'
+        ));
     }
     
 

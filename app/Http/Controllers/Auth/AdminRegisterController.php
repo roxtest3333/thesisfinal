@@ -10,10 +10,7 @@ use Spatie\Permission\Models\Role;
 
 class AdminRegisterController extends Controller
 {
-    /*  public function __construct()
-    {
-        $this->middleware('auth:web'); // Ensure only logged-in admins can access
-    } */
+    
 
     public function showRegistrationForm()
     {
@@ -42,8 +39,6 @@ class AdminRegisterController extends Controller
         // Assign the 'admin' role to the new user
         $user->assignRole('admin');
 
-        // Redirect to the admin dashboard
-        return redirect('/admin/dashboard')->with('message', 'Admin registered Successful');
-        
+        return redirect('/admin/dashboard')->with('message', 'Admin registered successfully.');
     }
 }
