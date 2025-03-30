@@ -3,14 +3,18 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL; 
-use Illuminate\Support\Facades\Mail; 
+
 use App\Models\User;
-use App\Models\Student;
+
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Auth\Access\AuthorizationException;
+use App\Mail\VerificationEmail;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Http\Request;
+use App\Models\Student;
 
 class LoginController extends Controller
 {
@@ -106,7 +110,7 @@ class LoginController extends Controller
         $verificationUrl = $this->generateVerificationUrl($student);
         
         // Here you would send the email with the verification URL
-        // Mail::to($student->email)->send(new VerificationEmail($verificationUrl));
+         Mail::to($student->email)->send(new VerificationEmail($verificationUrl));
         
         return back()->with('message', 'Verification email sent successfully. Please check your inbox.');
     }
