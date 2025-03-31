@@ -46,8 +46,8 @@ class ScheduleController extends Controller
     
             // Calculate valid date range (3-7 working days from today)
             $today = Carbon::today();
-            $minDate = $this->addWorkingDays($today->copy(), 3);
-            $maxDate = $this->addWorkingDays($today->copy(), 7);
+            $minDate = $this->addWorkingDays($today->copy(), 2);
+            $maxDate = $this->addWorkingDays($today->copy(), 8);
     
             // Validate the request
             $validated = $request->validate([
@@ -92,18 +92,16 @@ class ScheduleController extends Controller
      * Helper function to add working days (excluding weekends).
      */
     private function addWorkingDays($date, $days)
-    {
-        $count = 0;
-        while ($count < $days) {
-            $date->addDay();
-            if (!$date->isWeekend()) {
-                $count++;
-            }
+{
+    $count = 0;
+    while ($count < $days) {
+        $date->addDay();
+        if (!$date->isWeekend()) {
+            $count++;
         }
-        return $date;
     }
-    
-    
+    return $date;
+}
 public function cancelRequest($id)
 {
     $student = Auth::guard('student')->user();
