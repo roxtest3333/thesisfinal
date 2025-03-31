@@ -36,81 +36,90 @@
     </footer>
 
     <script>
-    // Improved Logout Timer
-    (function() {
-        const INACTIVE_TIMEOUT = 30 * 60 * 1000; // 30 minutes
-        let logoutTimer;
-
-        function resetLogoutTimer() {
-            clearTimeout(logoutTimer);
-            logoutTimer = setTimeout(forceLogout, INACTIVE_TIMEOUT);
-        }
-
-        function forceLogout() {
-            Swal.fire({
-                title: 'Session Expired',
-                text: 'You have been logged out due to inactivity.',
-                icon: 'warning',
-                confirmButtonText: 'OK'
-            }).then(() => {
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = "{{ route('logout') }}";
-
-                const csrfToken = document.createElement('input');
-                csrfToken.type = 'hidden';
-                csrfToken.name = '_token';
-                csrfToken.value = "{{ csrf_token() }}";
-                form.appendChild(csrfToken);
-
-                document.body.appendChild(form);
-                form.submit();
-            });
-        }
-
-        // Event listeners with safe checking
-        ['mousemove', 'keypress', 'click', 'scroll'].forEach(event => {
-            document.addEventListener(event, resetLogoutTimer);
-        });
-
-        // Sidebar Toggle - Safe Implementation
-        document.addEventListener('DOMContentLoaded', () => {
-            const toggleBtn = document.querySelector('.toggle-sidebar-btn');
-            const sidebar = document.querySelector('.sidebar');
-
-            // Safe check to prevent null reference errors
-            if (toggleBtn && sidebar) {
-                function isMobile() {
-                    return window.innerWidth <= 768;
-                }
-
-                function toggleSidebar() {
-                    if (isMobile()) {
-                        sidebar.classList.toggle('active');
-                    } else {
-                        sidebar.classList.toggle('collapsed');
-                    }
-                }
-
-                toggleBtn.addEventListener('click', (event) => {
-                    toggleSidebar();
-                    event.stopPropagation();
-                });
-
-                // Mobile sidebar close logic
-                document.addEventListener('click', (event) => {
-                    if (isMobile() && 
-                        !sidebar.contains(event.target) && 
-                        !toggleBtn.contains(event.target)) {
-                        sidebar.classList.remove('active');
-                    }
+        (function() {
+            const INACTIVE_TIMEOUT = 30 * 60 * 1000; // 30 minutes
+            let logoutTimer;
+    
+            function resetLogoutTimer() {
+                clearTimeout(logoutTimer);
+                logoutTimer = setTimeout(forceLogout, INACTIVE_TIMEOUT);
+            }
+    
+            function forceLogout() {
+                Swal.fire({
+                    title: 'Session Expired',
+                    text: 'You have been logged out due to inactivity.',
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = "{{ route('logout') }}";
+    
+                    const csrfToken = document.createElement('input');
+                    csrfToken.type = 'hidden';
+                    csrfToken.name = '_token';
+                    csrfToken.value = "{{ csrf_token() }}";
+                    form.appendChild(csrfToken);
+    
+                    document.body.appendChild(form);
+                    form.submit();
                 });
             }
-        });
-
-        // Initial timer start
-        resetLogoutTimer();
-    })();
+    
+            // Event listeners to reset inactivity timer
+            ['mousemove', 'keypress', 'click', 'scroll'].forEach(event => {
+                document.addEventListener(event, resetLogoutTimer);
+            });
+    
+            // Session Keep-Alive Request Every 5 Minutes
+            setInterval(() => {
+                fetch('/keep-alive', {
+                    method: 'POST',
+                    headers: { 
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content 
+                    }
+                });
+            }, 5 * 60 * 1000); // Every 5 minutes
+    
+            // Sidebar Toggle - Safe Implementation
+            document.addEventListener('DOMContentLoaded', () => {
+                const toggleBtn = document.querySelector('.toggle-sidebar-btn');
+                const sidebar = document.querySelector('.sidebar');
+    
+                if (toggleBtn && sidebar) {
+                    function isMobile() {
+                        return window.innerWidth <= 768;
+                    }
+    
+                    function toggleSidebar() {
+                        if (isMobile()) {
+                            sidebar.classList.toggle('active');
+                        } else {
+                            sidebar.classList.toggle('collapsed');
+                        }
+                    }
+    
+                    toggleBtn.addEventListener('click', (event) => {
+                        toggleSidebar();
+                        event.stopPropagation();
+                    });
+    
+                    // Mobile sidebar close logic
+                    document.addEventListener('click', (event) => {
+                        if (isMobile() && 
+                            !sidebar.contains(event.target) && 
+                            !toggleBtn.contains(event.target)) {
+                            sidebar.classList.remove('active');
+                        }
+                    });
+                }
+            });
+    
+            // Start the inactivity timer
+            resetLogoutTimer();
+        })();
     </script>
+    
 </body>
 </html>
