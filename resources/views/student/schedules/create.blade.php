@@ -48,7 +48,8 @@
             <!-- Preferred Date -->
             <div class="mb-3">
                 <label for="preferred_date" class="form-label">Preferred Date</label>
-                <input type="text" class="form-control" id="preferred_date" name="preferred_date" required>
+                <input type="text" class="form-control" id="preferred_date" name="preferred_date" placeholder="Select a date" readonly required>
+                <div id="date-error" class="text-red-500 text-sm hidden mt-1"></div>
                 @error('preferred_date')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
@@ -82,13 +83,18 @@
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.min.css">
+<!-- Load Flatpickr resources over HTTPS -->
+</script>
 
-<!-- JavaScript for COR/COG Selection & Date Restrictions -->
+<!-- Combined JavaScript for Date Picker and File Selection -->
 <script>
-    $(document).ready(function() {
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get the file dropdown and manual fields elements
+        const fileDropdown = document.getElementById('file_id');
+        const manualFields = document.getElementById('manual_sy_sem');
+        const dateErrorDisplay = document.getElementById('date-error');
+        
+        // Function to calculate valid date range (3-7 working days from today)
         function getValidDateRange() {
             let today = new Date();
             let minDate = new Date(today);
@@ -113,18 +119,132 @@
             return { minDate, maxDate };
         }
     
+        // Get the valid date range
         let dateRange = getValidDateRange();
-    
-        $("#preferred_date").datepicker({
-            dateFormat: "yy-mm-dd",
+        
+        // Function to check if a date is a weekend
+        function isWeekend(date) {
+            let day = date.getDay();
+            return day === 6 || day === 0; // Saturday = 6, Sunday = 0
+        }
+        
+        // Function to display date error message
+        function showDateError(message) {
+            dateErrorDisplay.textContent = message;
+            dateErrorDisplay.classList.remove('hidden');
+            setTimeout(() => {
+                dateErrorDisplay.classList.add('hidden');
+            }, 3000);
+        }
+        
+        // Initialize Flatpickr with custom configuration
+        const datePicker = flatpickr("#preferred_date", {
+            dateFormat: "Y-m-d",
             minDate: dateRange.minDate,
             maxDate: dateRange.maxDate,
-            beforeShowDay: function(date) {
-                let day = date.getDay();
-                return [(day !== 0 && day !== 6)]; // Disable weekends
+            disable: [
+                function(date) {
+                    return isWeekend(date); // Disable weekends
+                }
+            ],
+            onDayCreate: function(dObj, dStr, fp, dayElem) {
+                // Add a class to weekend days for styling
+                if (isWeekend(dayElem.dateObj)) {
+                    dayElem.className += " weekend-day";
+                }
+            },
+            onChange: function(selectedDates, dateStr, instance) {
+                // Additional validation when a date is selected
+                if (selectedDates.length > 0) {
+                    let selectedDate = selectedDates[0];
+                    
+                    if (isWeekend(selectedDate)) {
+                        showDateError("Weekends are not available for scheduling.");
+                        instance.clear();
+                    } else if (selectedDate < dateRange.minDate) {
+                        showDateError("Date must be at least 3 working days from today.");
+                        instance.clear();
+                    } else if (selectedDate > dateRange.maxDate) {
+                        showDateError("Date must be within 7 working days from today.");
+                        instance.clear();
+                    }
+                }
+            },
+            onClose: function(selectedDates, dateStr, instance) {
+                if (selectedDates.length === 0) {
+                    return;
+                }
+                
+                let selectedDate = selectedDates[0];
+                
+                // This is a backup validation, should not be needed due to disabled dates
+                if (isWeekend(selectedDate)) {
+                    showDateError("Weekends are not available for scheduling.");
+                    instance.clear();
+                }
             }
         });
+        
+        // Add event listener after Flatpickr is initialized
+        document.addEventListener('click', function(e) {
+            // Check if the clicked element is a disabled day in the date picker
+            if (e.target.classList.contains('flatpickr-day') && e.target.classList.contains('disabled')) {
+                // Check if it's a weekend
+                if (e.target.classList.contains('weekend-day')) {
+                    showDateError("Weekends are not available for scheduling.");
+                } else if (e.target.classList.contains('flatpickr-disabled')) {
+                    // Check if it's before the minimum date or after the maximum date
+                    const dayDate = new Date(e.target.getAttribute('aria-label'));
+                    if (dayDate < dateRange.minDate) {
+                        showDateError("Date must be at least 3 working days from today.");
+                    } else {
+                        showDateError("Date must be within 7 working days from today.");
+                    }
+                }
+            }
+        });
+        
+        // Show/hide manual fields based on file selection
+        if (fileDropdown) {
+            fileDropdown.addEventListener('change', function() {
+                const selectedFileName = fileDropdown.options[fileDropdown.selectedIndex].text;
+                if (selectedFileName === 'COR' || selectedFileName === 'COG') {
+                    manualFields.classList.remove('hidden');
+                } else {
+                    manualFields.classList.add('hidden');
+                }
+            });
+            
+            // Check initial value on page load
+            const selectedFileName = fileDropdown.options[fileDropdown.selectedIndex].text;
+            if (selectedFileName === 'COR' || selectedFileName === 'COG') {
+                manualFields.classList.remove('hidden');
+            }
+        }
     });
 </script>
+
+<style>
+    /* Custom styles for the date picker */
+    .flatpickr-day.weekend-day {
+        background-color: #fee2e2;
+        color: #ef4444;
+        text-decoration: line-through;
+    }
+    
+    .flatpickr-day.selected {
+        background: #6366f1;
+        border-color: #6366f1;
+    }
+    
+    .flatpickr-day.selected:hover {
+        background: #4f46e5;
+        border-color: #4f46e5;
+    }
+    
+    .flatpickr-day:hover {
+        background: #e0e7ff;
+    }
+</style>
 
 @endsection

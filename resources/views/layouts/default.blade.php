@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>{{ $title ?? 'File Retrieval System' }}</title>
-
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-    <link rel="icon" href="{{ asset('images/PRMSU.png') }}">
-    <script src="https://unpkg.com/alpinejs" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x/dist/cdn.min.js" defer></script>
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>{{ $title ?? 'File Retrieval System' }}</title>
+    
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
+        <link rel="icon" href="{{ asset('images/PRMSU.png') }}">
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x/dist/cdn.min.js" defer></script>
+        
+        <!-- Add Flatpickr resources here -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"></script>
+    </head>
 
 <body class="bg-gray-100 text-gray-800 bg-cover bg-center md:bg-fixed m-0 flex flex-col min-h-screen" 
       style="background-image: url('{{ asset('images/bg-login-register.jpg') }}');">
