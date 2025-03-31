@@ -27,7 +27,7 @@ class LoginController extends Controller
     public function showLoginForm(Request $request)
 {
     if (session()->has('message')) {
-        session()->flash('message', session('message')); // Persist message session
+        session()->flash('message', session('message')); 
     }
 
     return view('auth.login');
@@ -72,7 +72,7 @@ class LoginController extends Controller
             Auth::guard('student')->logout();
         }
     
-        // 🔥 Ensure message persists for the next request
+        // 
         session()->flash('message', 'Logout Successful');
     
         return redirect('/login');
