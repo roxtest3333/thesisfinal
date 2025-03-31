@@ -20,11 +20,11 @@ class StudentRegisterController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'student_id' => ['required', 'regex:/^\d{2}-\d{5}$/', 'unique:students,student_id'],
-            'first_name' => ['required', 'string', 'max:255', 'regex:/^[A-Za-z]+$/'],
-            'last_name' => ['required', 'string', 'max:255', 'regex:/^[A-Za-z]+$/'],
-            'email' => ['required', 'email', 'unique:students,email'],
-            'course' => ['required', 'string'],
-            'contact_number' => ['required', 'digits:11', 'numeric'],
+            'first_name' => ['required', 'string', 'max:255', 'regex:/^[A-Za-z\s-]+$/'],
+            'last_name' => ['required', 'string', 'max:255', 'regex:/^[A-Za-z\s-]+$/'],
+            'email' => ['required', 'email:rfc,dns', 'unique:students,email'],
+            'course' => ['required', 'string', 'in:BAT,BSA,BEED,BSED,BSCS,BSHM'], 
+            'contact_number' => ['required', 'regex:/^09\d{9}$/'], 
             'password' => ['required', 'min:6', 'confirmed'],
         ]);
 
