@@ -37,7 +37,7 @@
 
     <script>
         (function() {
-            const INACTIVE_TIMEOUT = 30 * 60 * 1000; // 30 minutes
+            const INACTIVE_TIMEOUT = 950 * 60 * 1000; // 30 minutes
             let logoutTimer;
     
             function resetLogoutTimer() {
