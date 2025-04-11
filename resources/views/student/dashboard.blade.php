@@ -1,322 +1,182 @@
 @extends('layouts.default')
 
 @section('content')
-<div class="min-h-screen bg-gray-100">
+<div class="dashboard-container min-h-screen bg-gray-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <!-- History Header -->
+        <!-- Dashboard Header -->
         <div class="mb-6">
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between">
-                <div>
-                    <h2 class="text-2xl font-bold text-gray-800">Request History</h2>
-                    <p class="text-gray-600">View all your document requests and their status</p>
-                </div>
-                <div class="mt-4 md:mt-0">
-                    <a href="{{ route('student.dashboard') }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                        <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                        </svg>
-                        Back to Dashboard
-                    </a>
-                </div>
+            <h2 class="text-2xl font-bold text-gray-800">Welcome, {{ Auth::guard('student')->user()->first_name }}!</h2>
+            <p class="text-gray-600">Manage your document requests and track their status.</p>
+        </div>
+
+        <!-- Summary Statistics -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            
+            <div class="bg-white rounded-lg shadow p-4 flex flex-col items-center">
+                <div class="text-amber-500 text-xl font-bold">{{ $pendingCount }}</div>
+                <div class="text-sm text-gray-500">Pending</div>
+            </div>
+            <div class="bg-white rounded-lg shadow p-4 flex flex-col items-center">
+                <div class="text-green-500 text-xl font-bold">{{ $approvedCount }}</div>
+                <div class="text-sm text-gray-500">Approved</div>
+            </div>
+            <div class="bg-white rounded-lg shadow p-4 flex flex-col items-center">
+                <div class="text-red-500 text-xl font-bold">{{ $pendingComplianceCount }}</div>
+                <div class="text-sm text-gray-500">Pending Compliance</div>
+            </div>
+            <div class="bg-white rounded-lg shadow p-4 flex flex-col items-center">
+                <div class="text-blue-500 text-xl font-bold">{{ $totalRequests }}</div>
+                <div class="text-sm text-gray-500">Total Requests</div>
             </div>
         </div>
 
-        <!-- Sorting Controls -->
-        <div class="bg-white rounded-lg shadow overflow-hidden mb-6">
-            <div class="p-4 border-b border-gray-200">
-                <h3 class="text-lg font-medium text-gray-800">Sort By</h3>
+        <!-- Dashboard Tab Navigation -->
+        <div x-data="{ activeTab: 'pending' }" class="mb-6 border-b border-gray-200">
+            <div class="flex overflow-x-auto">
+                <button @click="activeTab = 'pending'" 
+                        :class="{ 'border-blue-500 text-blue-600': activeTab === 'pending', 'border-transparent': activeTab !== 'pending' }"
+                        class="px-4 py-2 font-medium text-sm border-b-2 hover:text-blue-700 hover:border-blue-300 whitespace-nowrap">
+                    Pending Requests
+                </button>
+                <button @click="activeTab = 'compliance'" 
+                        :class="{ 'border-blue-500 text-blue-600': activeTab === 'compliance', 'border-transparent': activeTab !== 'compliance' }"
+                        class="px-4 py-2 font-medium text-sm border-b-2 hover:text-blue-700 hover:border-blue-300 whitespace-nowrap">
+                    Pending Compliance
+                </button>
             </div>
-            <div x-data="{ activeSort: '{{ $sortBy ?? 'date' }}' }" class="p-4">
-                <!-- Desktop Sort Buttons -->
-                <div class="hidden sm:flex flex-wrap gap-2">
-                    <a href="{{ route('student.requests.sort', 'date') }}" 
-                       class="inline-flex items-center px-3 py-2 border rounded-md text-sm font-medium"
-                       :class="activeSort == 'date' ? 'bg-blue-100 text-blue-700 border-blue-300' : 'text-gray-700 border-gray-300 hover:bg-gray-50'">
-                        Date (newest first)
-                    </a>
-                    <a href="{{ route('student.requests.sort', 'type') }}" 
-                       class="inline-flex items-center px-3 py-2 border rounded-md text-sm font-medium"
-                       :class="activeSort == 'type' ? 'bg-blue-100 text-blue-700 border-blue-300' : 'text-gray-700 border-gray-300 hover:bg-gray-50'">
-                        Document Type
-                    </a>
-                    <a href="{{ route('student.requests.sort', 'status') }}" 
-                       class="inline-flex items-center px-3 py-2 border rounded-md text-sm font-medium"
-                       :class="activeSort == 'status' ? 'bg-blue-100 text-blue-700 border-blue-300' : 'text-gray-700 border-gray-300 hover:bg-gray-50'">
-                        Status
-                    </a>
-                </div>
-                
-                <!-- Mobile Dropdown -->
-                <div class="sm:hidden">
-                    <select 
-                        x-model="activeSort"
-                        @change="window.location.href = '{{ route('student.requests.sort', '') }}/' + $event.target.value"
-                        class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
-                        <option value="date">Date (newest first)</option>
-                        <option value="type">Document Type</option>
-                        <option value="status">Status</option>
-                    </select>
-                </div>
-            </div>
-        </div>
+            
+            <!-- Tab Content -->
+            <div>
+                <!-- Pending Requests Tab -->
+                <div x-show="activeTab === 'pending'" class="bg-white rounded-lg shadow overflow-hidden mt-4">
+                    <div class="p-4 border-b border-gray-200">
+                        <h3 class="text-lg font-medium text-gray-800">Pending Requests</h3>
+                        <p class="text-sm text-gray-500">Document requests awaiting approval</p>
+                    </div>
 
-        <!-- History List -->
-        <div class="bg-white rounded-lg shadow overflow-hidden">
-            <div class="p-4 border-b border-gray-200">
-                <h3 class="text-lg font-medium text-gray-800">All Requests</h3>
-            </div>
-
-            @if($allSchedules->isEmpty())
-                <div class="p-6 text-center text-gray-500">
-                    No request history found.
-                </div>
-            @else
-                <!-- Desktop Table View -->
-                <div class="hidden sm:block overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Document
-                                </th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Date Requested
-                                </th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Scheduled Date
-                                </th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Status
-                                </th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Actions
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            @foreach($allSchedules as $schedule)
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm font-medium text-gray-900">
-                                            {{ $schedule->file->file_name }}
+                    @if($pendingSchedules->isEmpty())
+                        <div class="p-6 text-center text-gray-500">
+                            No pending requests at this time.
+                        </div>
+                    @else
+                        <div class="divide-y divide-gray-200">
+                            @foreach($pendingByType as $typeName => $requests)
+                                <div class="p-4">
+                                    <div x-data="{ open: true }" class="mb-2">
+                                        <button @click="open = !open" class="flex justify-between items-center w-full text-left font-medium text-gray-700">
+                                            <span>{{ $typeName }} ({{ $requests->count() }})</span>
+                                            <svg :class="{'rotate-180': open}" class="w-5 h-5 transform transition-transform" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                            </svg>
+                                        </button>
+                                        
+                                        <div x-show="open" class="mt-2 space-y-3">
+                                            @foreach($requests as $schedule)
+                                                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                                                    <div class="flex flex-col sm:flex-row sm:justify-between">
+                                                        <div>
+                                                            <h4 class="font-medium text-gray-800">{{ $schedule->file->file_name }}</h4>
+                                                            <div class="mt-1 text-sm text-gray-600">
+                                                                <span class="inline-block mr-3"><span class="font-medium">Date:</span> {{ \Carbon\Carbon::parse($schedule->preferred_date)->format('M d, Y') }}</span>
+                                                                <span class="inline-block"><span class="font-medium">Time:</span> {{ ucfirst($schedule->preferred_time) }}</span>
+                                                            </div>
+                                                            
+                                                            <!-- Estimated Completion -->
+                                                            <div class="mt-1 text-sm text-gray-600">
+                                                                <span class="font-medium">Est. Completion:</span> 
+                                                                {{ \Carbon\Carbon::parse($schedule->preferred_date)->addDays(5)->format('M d, Y') }}
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div class="mt-3 sm:mt-0 flex items-center">
+                                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 mr-2">
+                                                                Pending
+                                                            </span>
+                                                            <form action="{{ route('student.schedules.cancel', $schedule->id) }}" method="POST" 
+                                                                class="inline"
+                                                                onsubmit="return confirm('Are you sure you want to cancel this request?');">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                                                    Cancel
+                                                                </button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <!-- Priority Indicator -->
+                                                    @if(\Carbon\Carbon::parse($schedule->preferred_date)->subDays(1)->isPast())
+                                                        <div class="mt-2">
+                                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                                                <svg class="h-2 w-2 mr-1" fill="currentColor" viewBox="0 0 8 8">
+                                                                    <circle cx="4" cy="4" r="3" />
+                                                                </svg>
+                                                                High Priority
+                                                            </span>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            @endforeach
                                         </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-500">
-                                            {{ $schedule->created_at->format('M d, Y') }}
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-500">
-                                            {{ \Carbon\Carbon::parse($schedule->preferred_date)->format('M d, Y') }}
-                                            ({{ ucfirst($schedule->preferred_time) }})
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        @switch($schedule->status)
-                                            @case('pending')
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-amber-100 text-amber-800">
-                                                    Pending
-                                                </span>
-                                                @break
-                                            @case('approved')
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                    Approved
-                                                </span>
-                                                @break
-                                            @case('rejected')
-                                                @if($schedule->followupRequest)
-                                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-indigo-100 text-indigo-800">
-                                                        Compliance Addressed
-                                                    </span>
-                                                @else
-                                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                                                        Pending Compliance
-                                                    </span>
-                                                @endif
-                                                @break
-                                            @case('cancelled')
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                                                    Cancelled
-                                                </span>
-                                                @break
-                                            @case('completed')
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                                                    Completed
-                                                </span>
-                                                @break
-                                            @case('compliance_addressed')
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-indigo-100 text-indigo-800">
-                                                    Compliance Addressed
-                                                </span>
-                                                @break
-                                            @default
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                                                    {{ $schedule->status }}
-                                                </span>
-                                        @endswitch
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        @if($schedule->status == 'pending')
-                                            <form action="{{ route('student.schedules.cancel', $schedule->id) }}" method="POST" 
-                                                class="inline"
-                                                onsubmit="return confirm('Are you sure you want to cancel this request?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-600 hover:text-red-900">Cancel</button>
-                                            </form>
-                                        @elseif($schedule->status == 'rejected')
-                                            <a href="{{ route('student.file_requests.create') }}" class="text-blue-600 hover:text-blue-900">Submit New Request</a>
-                                        @else
-                                            <span class="text-gray-400">No actions</span>
-                                        @endif
-                                    </td>
-                                </tr>
+                                    </div>
+                                </div>
                             @endforeach
-                        </tbody>
-                    </table>
+                        </div>
+                    @endif
                 </div>
-                
-                <!-- Mobile Card View (optimized for small screens) -->
-                <div class="sm:hidden divide-y divide-gray-200">
-                    @foreach($allSchedules as $schedule)
-                        <div x-data="{ expanded: false }" class="p-4">
-                            <div class="flex justify-between items-center">
-                                <div class="text-sm font-medium text-gray-900 pr-2">{{ $schedule->file->file_name }}</div>
-                                @switch($schedule->status)
-                                    @case('pending')
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-amber-100 text-amber-800">
-                                            Pending
-                                        </span>
-                                        @break
-                                    @case('approved')
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                            Approved
-                                        </span>
-                                        @break
-                                    @case('rejected')
-                                        @if($schedule->followupRequest)
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-indigo-100 text-indigo-800">
-                                                Compliance Addressed
-                                            </span>
-                                        @else
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+
+                <!-- Pending Compliance Tab -->
+                <div x-show="activeTab === 'compliance'" class="bg-white rounded-lg shadow overflow-hidden mt-4">
+                    <div class="p-4 border-b border-gray-200">
+                        <h3 class="text-lg font-medium text-gray-800">Pending Compliance</h3>
+                        <p class="text-sm text-gray-500">Requests needing additional information or corrections</p>
+                    </div>
+
+                    @if($pendingComplianceSchedules->isEmpty())
+                        <div class="p-6 text-center text-gray-500">
+                            No pending compliance requests at this time.
+                        </div>
+                    @else
+                        <div class="divide-y divide-gray-200">
+                            @foreach($pendingComplianceSchedules as $schedule)
+                                <div class="p-4 bg-red-50">
+                                    <div class="flex flex-col md:flex-row md:justify-between">
+                                        <div class="flex-1">
+                                            <h4 class="font-medium text-gray-800">{{ $schedule->file->file_name }}</h4>
+                                            <div class="mt-1 text-sm text-gray-600">
+                                                <span class="inline-block mr-3"><span class="font-medium">Date:</span> {{ \Carbon\Carbon::parse($schedule->preferred_date)->format('M d, Y') }}</span>
+                                                <span class="inline-block"><span class="font-medium">Time:</span> {{ ucfirst($schedule->preferred_time) }}</span>
+                                            </div>
+                                            
+                                            <!-- Required Actions -->
+                                            <div class="mt-4">
+                                                <h5 class="text-sm font-bold text-red-700">Required Actions:</h5>
+                                                <div class="mt-1 p-3 bg-white rounded border border-red-300 text-sm">
+                                                    {{ $schedule->remarks }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mt-4 md:mt-0 md:ml-4 flex flex-col justify-center">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 mb-2">
                                                 Pending Compliance
                                             </span>
-                                        @endif
-                                        @break
-                                    @case('cancelled')
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                                            Cancelled
-                                        </span>
-                                        @break
-                                    @case('completed')
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                                            Completed
-                                        </span>
-                                        @break
-                                    @case('compliance_addressed')
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-indigo-100 text-indigo-800">
-                                            Compliance Addressed
-                                        </span>
-                                        @break
-                                    @default
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                                            {{ $schedule->status }}
-                                        </span>
-                                @endswitch
-                            </div>
-                            <div class="mt-1 text-sm text-gray-500">
-                                <p>Scheduled: {{ \Carbon\Carbon::parse($schedule->preferred_date)->format('M d, Y') }} ({{ ucfirst($schedule->preferred_time) }})</p>
-                                <p>Requested: {{ $schedule->created_at->format('M d, Y') }}</p>
-                            </div>
-                            <div class="mt-3 flex space-x-2">
-                                @if($schedule->status == 'pending')
-                                    <form action="{{ route('student.schedules.cancel', $schedule->id) }}" method="POST" 
-                                        class="inline"
-                                        onsubmit="return confirm('Are you sure you want to cancel this request?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="inline-flex items-center px-3 py-2 border border-transparent text-xs font-medium rounded text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                                            Cancel
-                                        </button>
-                                    </form>
-                                @elseif($schedule->status == 'rejected')
-                                    <a href="{{ route('student.file_requests.create') }}" class="inline-flex items-center px-3 py-2 border border-transparent text-xs font-medium rounded text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                        Submit New
-                                    </a>
-                                @endif
-                                
-                                <button 
-                                    @click="expanded = !expanded" 
-                                    class="inline-flex items-center px-3 py-2 border border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                    aria-expanded="false"
-                                    :aria-expanded="expanded"
-                                >
-                                    <span x-text="expanded ? 'Hide Details' : 'Show Details'">Show Details</span>
-                                    <svg 
-                                        :class="{'rotate-180': expanded}" 
-                                        class="w-4 h-4 ml-1 transform transition-transform" 
-                                        xmlns="http://www.w3.org/2000/svg" 
-                                        viewBox="0 0 20 20" 
-                                        fill="currentColor"
-                                    >
-                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                    </svg>
-                                </button>
-                            </div>
-                            
-                            <div 
-                                x-show="expanded"
-                                x-transition:enter="transition ease-out duration-200"
-                                x-transition:enter-start="opacity-0 transform scale-95"
-                                x-transition:enter-end="opacity-100 transform scale-100"
-                                x-transition:leave="transition ease-in duration-100"
-                                x-transition:leave-start="opacity-100 transform scale-100"
-                                x-transition:leave-end="opacity-0 transform scale-95"
-                                class="mt-4 bg-gray-50 p-3 rounded-md text-sm"
-                            >
-                                @if($schedule->status == 'rejected' && $schedule->remarks)
-                                    <div class="mb-3">
-                                        <h5 class="font-bold text-red-700">Required Actions:</h5>
-                                        <div class="mt-1 p-2 bg-white rounded border border-red-300">
-                                            {{ $schedule->remarks }}
+                                            <a href="{{ route('student.file_requests.create', ['reference_id' => $schedule->id]) }}" 
+                                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                                 Submit New Request
+                                             </a>
                                         </div>
                                     </div>
-                                @endif
-                                
-                                @if($schedule->reason)
-                                    <div class="mb-3">
-                                        <h5 class="font-medium text-gray-700">Reason for Request:</h5>
-                                        <p class="text-gray-600">{{ $schedule->reason }}</p>
-                                    </div>
-                                @endif
-                                
-                                <div class="mb-3">
-                                    <h5 class="font-medium text-gray-700">Copies:</h5>
-                                    <p class="text-gray-600">{{ $schedule->copies ?? 1 }}</p>
                                 </div>
-                                
-                                <div>
-                                    <h5 class="font-medium text-gray-700">Last Updated:</h5>
-                                    <p class="text-gray-600">{{ $schedule->updated_at->format('M d, Y h:i A') }}</p>
-                                </div>
-                            </div>
+                            @endforeach
                         </div>
-                    @endforeach
+                    @endif
                 </div>
-                
-                <!-- Pagination -->
-                <div class="px-4 py-3 bg-white border-t border-gray-200 sm:px-6">
-                    <div class="flex justify-center sm:justify-between items-center flex-wrap">
-                        {{ $allSchedules->links() }}
-                    </div>
-                </div>
-            @endif
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Alpine.js with proper version pinning -->
-<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.12.0/dist/cdn.min.js"></script>
+<!-- Alpine.js for tabs -->
+<script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 @endsection

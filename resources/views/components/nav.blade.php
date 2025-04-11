@@ -1,13 +1,18 @@
+<!-- Add Alpine.js if not already present in your layout -->
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
 <div x-data="{ open: false }" class="bg-gray-800 fixed w-full z-20 top-0 left-0 px-6 py-4 text-white shadow-lg">
     <div class="container flex justify-between items-center mx-auto">
-        <!-- Logo and Title -->
+        <!-- Logo and Title - hide logo on mobile -->
         <a href="
             @auth('web') {{ route('admin.dashboard') }}
             @elseif(auth('student')->check()) {{ route('student.dashboard') }}
             @endauth"
             class="flex items-center justify-center md:justify-start hover:text-sky-400 transition-transform transform hover:scale-105">
-            <img src="{{ asset('images/PRMSU.png') }}" alt="Logo" class="h-10 mr-2">
-            <span class="text-lg font-semibold">PRMSU Document Request Portal</span>
+            <img src="{{ asset('images/PRMSU.png') }}" alt="Logo" class="h-10 mr-2 hidden md:block">
+            <!-- Full title on desktop, short version on mobile -->
+            <span class="text-lg font-semibold hidden md:block">PRMSU Document Request Portal</span>
+            <span class="text-lg font-semibold block md:hidden">PRMSU Portal</span>
         </a>
 
         <!-- Mobile Menu Button -->
@@ -123,10 +128,10 @@
     document.addEventListener("DOMContentLoaded", function () {
         let currentUrl = window.location.href;
 
-        // Apply active state only to top navbar links
-        document.querySelectorAll(".navbar .nav-link").forEach(link => {
+        // Apply active state to all nav links
+        document.querySelectorAll("#navbar-main a").forEach(link => {
             if (link.href === currentUrl) {
-                link.classList.add("active");
+                link.classList.add("bg-gray-700", "text-sky-400");
             }
         });
     });
