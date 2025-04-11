@@ -42,10 +42,10 @@ class LoginController extends Controller
         // Retrieve student record
         $student = Student::where('email', $request->email)->first();
 
-        // Check if student exists and email is not verified
+        /* // Check if student exists and email is not verified
         if ($student && $student->email_verified_at === null) {
             return back()->withErrors(['email' => 'Please verify your email before logging in.'])->withInput();
-        }
+        } */
 
         // Try admin login
         if (Auth::guard('web')->attempt($credentials, $remember)) {

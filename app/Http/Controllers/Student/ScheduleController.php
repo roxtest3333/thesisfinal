@@ -11,6 +11,7 @@ use App\Models\Semester;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Setting;
+use Exception;
 class ScheduleController extends Controller
 {
     /**
@@ -30,69 +31,79 @@ class ScheduleController extends Controller
      * Store a new schedule request.
      */
     public function store(Request $request)
-{
-    $student = Auth::guard('student')->user();
-    if (!$student) {
-        return redirect()->route('student.dashboard')->with('error', 'You must be logged in as a student to submit a request.');
-    }
-
-    $validated = $request->validate([
-        'preferred_date' => [
-            'required', 
-            'date', 
-            'after_or_equal:' . now()->addDays(3)->toDateString(), // At least 3 days from today
-            'before_or_equal:' . now()->addDays(7)->toDateString(), // Maximum 7 days from today
-            function ($attribute, $value, $fail) {
-                if (Carbon::parse($value)->isWeekend()) {
-                    $fail('Scheduling on weekends is not allowed. Please choose a weekday.');
-                }
+    {
+        try {
+            $student = Auth::guard('student')->user();
+    
+            // Get the latest school year and semester
+            $latestSchoolYear = SchoolYear::latest('created_at')->first();
+            $latestSemester = Semester::latest('created_at')->first();
+    
+            // Ensure they exist
+            if (!$latestSchoolYear || !$latestSemester) {
+                return redirect()->back()->with('error', 'No school year or semester has been set by the admin.');
             }
-        ],
-        'file_id' => 'required|exists:files,id',
-        'preferred_time' => 'required|in:AM,PM',
-        'reason' => 'required|string|max:255',
-        'manual_school_year' => 'nullable|string|max:255',
-        'manual_semester' => 'nullable|string|max:255',
-        'copies' => 'required|integer|min:1',
-    ]);
-
-    $schoolYear = SchoolYear::orderBy('year', 'desc')->first();
-    $semester = Semester::where('school_year_id', $schoolYear->id)->orderBy('id', 'desc')->first();
-
-    if (!$schoolYear || !$semester) {
-        return back()->withErrors(['error' => 'No active school year or semester found. Please contact an administrator.']);
-    }
-
-    $file = File::find($request->file_id);
-    if (in_array(optional($file)->file_name, ['COR', 'COG'])) {
-        if (!$request->manual_school_year || !$request->manual_semester) {
-            return back()->withErrors(['manual_school_year' => 'School year and semester are required for COR/COG requests.']);
+    
+            // Calculate valid date range (3-7 working days from today)
+            $today = Carbon::today();
+            $minDate = $this->addWorkingDays($today->copy(), 3);
+            $maxDate = $this->addWorkingDays($today->copy(), 7);
+    
+            // Validate the request
+            $validated = $request->validate([
+                'file_id' => 'required|integer',
+                'manual_school_year' => 'nullable|string',
+                'manual_semester' => 'nullable|string',
+                'preferred_date' => [
+                    'required',
+                    'date',
+                    function ($attribute, $value, $fail) use ($minDate, $maxDate) {
+                        $selectedDate = Carbon::parse($value);
+    
+                        if ($selectedDate->lessThan($minDate) || $selectedDate->greaterThan($maxDate)) {
+                            $fail("The selected date must be between {$minDate->toDateString()} and {$maxDate->toDateString()}, excluding weekends.");
+                        }
+    
+                        if ($selectedDate->isWeekend()) {
+                            $fail("The selected date falls on a weekend. Please choose a working day.");
+                        }
+                    }
+                ],
+                'preferred_time' => 'required|string',
+                'reason' => 'nullable|string',
+                'copies' => 'required|integer',
+            ]);
+    
+            // Assign the latest school year and semester
+            $validated['school_year_id'] = $latestSchoolYear->id;
+            $validated['semester_id'] = $latestSemester->id;
+            $validated['status'] = 'pending';
+            $validated['student_id'] = $student->id;
+    
+            Schedule::create($validated);
+    
+            return redirect()->route('student.dashboard')->with('message', 'Schedule created successfully!');
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Something went wrong! ' . $e->getMessage());
         }
-    } else {
-        $request->merge(['manual_school_year' => null, 'manual_semester' => null]);
     }
-
-    try {
-        Schedule::create([
-            'student_id' => $student->id,
-            'file_id' => $request->file_id,
-            'preferred_date' => $request->preferred_date,
-            'preferred_time' => $request->preferred_time,
-            'reason' => $request->reason,
-            'manual_school_year' => $request->manual_school_year,
-            'manual_semester' => $request->manual_semester,
-            'copies' => $request->copies,
-            'school_year_id' => $schoolYear->id,
-            'semester_id' => $semester->id,
-            'status' => 'Pending',
-        ]);
-
-        return redirect()->route('student.dashboard')->with('success', 'Schedule request submitted successfully.');
-    } catch (\Exception $e) {
-        return back()->withErrors(['error' => 'An error occurred while processing your request. Please try again later.']);
+    
+    /**
+     * Helper function to add working days (excluding weekends).
+     */
+    private function addWorkingDays($date, $days)
+    {
+        $count = 0;
+        while ($count < $days) {
+            $date->addDay();
+            if (!$date->isWeekend()) {
+                $count++;
+            }
+        }
+        return $date;
     }
-}
-
+    
+    
 public function cancelRequest($id)
 {
     $student = Auth::guard('student')->user();

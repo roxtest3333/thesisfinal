@@ -39,11 +39,11 @@
             </div>
 
             <div class="flex flex-col md:flex-row md:justify-between items-center text-sm gap-3 md:gap-6">
-                <div class="flex items-center">
+                {{-- <div class="flex items-center">
                     <input type="checkbox" name="remember" id="remember" class="mr-2"
                         {{ old('remember') ? 'checked' : '' }}>
                     <label for="remember" class="text-gray-700">Remember Me</label>
-                </div>
+                </div> --}}
             
                 <!-- Forgot Password Link -->
                 <a href="{{ route('student.password.request') }}" class="text-purple-600 hover:underline hover:text-purple-800 transition duration-200">

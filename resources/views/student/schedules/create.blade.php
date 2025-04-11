@@ -28,48 +28,51 @@
                 <select class="form-control w-full" name="file_id" id="file_id" required>
                     <option value="">-- Select a file --</option> 
                     @foreach($files as $file)
-                        <option value="{{ $file->id }}">{{ $file->file_name }}</option>
+                        <option value="{{ $file->id }}" 
+                            {{ old('file_id') == $file->id ? 'selected' : '' }}>
+                            {{ $file->file_name }}
+                        </option>
                     @endforeach
                 </select>
             </div>
             
             <!-- Manual School Year & Semester (Only for COR/COG) -->
-            <div id="manual_sy_sem" class="hidden">
+            <div id="manual_sy_sem" class="{{ old('manual_school_year') || old('manual_semester') ? '' : 'hidden' }}">
                 <label class="block text-gray-700 font-bold mb-1">Enter School Year</label>
-                <input type="text" name="manual_school_year" class="form-control w-full">
+                <input type="text" name="manual_school_year" class="form-control w-full" value="{{ old('manual_school_year') }}">
 
                 <label class="block text-gray-700 font-bold mb-1">Enter Semester</label>
-                <input type="text" name="manual_semester" class="form-control w-full">
+                <input type="text" name="manual_semester" class="form-control w-full" value="{{ old('manual_semester') }}">
             </div>
 
             <!-- Preferred Date -->
-            <div>
-                <label class="block text-gray-700 font-bold mb-1">Preferred Date</label>
-                <input type="date" id="preferred_date" name="preferred_date" class="form-control w-full"
-                    min="{{ now()->addDays(3)->toDateString() }}"
-                    max="{{ now()->addDays(7)->toDateString() }}"
-                    required>
+            <div class="mb-3">
+                <label for="preferred_date" class="form-label">Preferred Date</label>
+                <input type="text" class="form-control" id="preferred_date" name="preferred_date" required>
+                @error('preferred_date')
+                    <div class="text-danger">{{ $message }}</div>
+                @enderror
             </div>
 
             <!-- Preferred Time -->
             <div>
                 <label class="block text-gray-700 font-bold mb-1">Preferred Time</label>
                 <select name="preferred_time" class="form-control w-full" required>
-                    <option value="AM">Morning (AM)</option>
-                    <option value="PM">Afternoon (PM)</option>
+                    <option value="AM" {{ old('preferred_time') == 'AM' ? 'selected' : '' }}>Morning (AM)</option>
+                    <option value="PM" {{ old('preferred_time') == 'PM' ? 'selected' : '' }}>Afternoon (PM)</option>
                 </select>
             </div>
 
             <!-- Reason -->
             <div>
                 <label class="block text-gray-700 font-bold mb-1">Reason for Retrieval</label>
-                <input type="text" name="reason" class="form-control w-full" required>
+                <input type="text" name="reason" class="form-control w-full" value="{{ old('reason') }}" required>
             </div>
 
             <!-- Copies -->
             <div>
                 <label class="block text-gray-700 font-bold mb-1">Number of Copies</label>
-                <input type="number" name="copies" min="1" class="form-control w-full" required>
+                <input type="number" name="copies" min="1" class="form-control w-full" value="{{ old('copies', 1) }}" required>
             </div>
 
             <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg shadow-md transition transform hover:scale-105">
@@ -79,50 +82,49 @@
     </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.min.css">
+
 <!-- JavaScript for COR/COG Selection & Date Restrictions -->
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const fileDropdown = document.getElementById('file_id');
-    const manualFields = document.getElementById('manual_sy_sem');
-    const preferredDateInput = document.getElementById('preferred_date');
-
-    // Function to check if a date is a weekend
-    function isWeekend(date) {
-        let day = date.getDay();
-        return day === 6 || day === 0; // Saturday = 6, Sunday = 0
-    }
-
-    // Ensure manual school year & semester fields show only for COR/COG
-    if (fileDropdown) {
-        fileDropdown.addEventListener('change', function () {
-            const selectedFileName = fileDropdown.options[fileDropdown.selectedIndex].text;
-            if (selectedFileName === 'COR' || selectedFileName === 'COG') {
-                manualFields.classList.remove('hidden');
-            } else {
-                manualFields.classList.add('hidden');
+    $(document).ready(function() {
+        function getValidDateRange() {
+            let today = new Date();
+            let minDate = new Date(today);
+            let maxDate = new Date(today);
+            
+            let daysToAdd = 0;
+            while (daysToAdd < 3) { // Find the minimum date (3 working days ahead)
+                minDate.setDate(minDate.getDate() + 1);
+                if (minDate.getDay() !== 0 && minDate.getDay() !== 6) {
+                    daysToAdd++;
+                }
+            }
+    
+            daysToAdd = 0;
+            while (daysToAdd < 7) { // Find the maximum date (7 working days ahead)
+                maxDate.setDate(maxDate.getDate() + 1);
+                if (maxDate.getDay() !== 0 && maxDate.getDay() !== 6) {
+                    daysToAdd++;
+                }
+            }
+    
+            return { minDate, maxDate };
+        }
+    
+        let dateRange = getValidDateRange();
+    
+        $("#preferred_date").datepicker({
+            dateFormat: "yy-mm-dd",
+            minDate: dateRange.minDate,
+            maxDate: dateRange.maxDate,
+            beforeShowDay: function(date) {
+                let day = date.getDay();
+                return [(day !== 0 && day !== 6)]; // Disable weekends
             }
         });
-    }
-
-    // Prevent selecting weekends and enforce date range
-    if (preferredDateInput) {
-        preferredDateInput.addEventListener('input', function () {
-            let selectedDate = new Date(this.value);
-            let minDate = new Date();
-            minDate.setDate(minDate.getDate() + 3); // 3 days from today
-            let maxDate = new Date();
-            maxDate.setDate(maxDate.getDate() + 7); // 7 days from today
-
-            if (isWeekend(selectedDate)) {
-                alert("Scheduling on weekends is not allowed. Please select a weekday.");
-                this.value = "";
-            } else if (selectedDate < minDate || selectedDate > maxDate) {
-                alert("Preferred date must be between 3 to 7 days from today.");
-                this.value = "";
-            }
-        });
-    }
-});
-</script>
+    });
+    </script>
 
 @endsection

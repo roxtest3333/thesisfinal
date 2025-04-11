@@ -2,7 +2,7 @@
 <div 
     x-data="{ show: true }" 
     x-show="show" 
-    x-init="setTimeout(() => show = false, 5000)" 
+    x-init="setTimeout(() => show = false, 10000)" 
     class="fixed bottom-5 right-5 flex items-center p-4 mb-4 text-sm text-blue-800 border border-blue-300 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400 dark:border-blue-800 shadow-lg z-50" 
     role="alert">
     <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">

@@ -1,4 +1,4 @@
-<div x-data="{ open: false }" class="bg-gray-800 fixed w-full z-20 top-0 left-0 px-6 py-4 text-white shadow-lg">
+<div x-data="{ open: false }" class="bg-gray-800 fixed w-full z-20 top-0 left-0 py-4 text-white shadow-lg">
     <div class="container flex justify-between items-center mx-auto">
         <!-- Logo and Title -->
         <a href="

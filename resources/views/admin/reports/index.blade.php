@@ -82,6 +82,7 @@
                         <th>Reason</th>
                         <th>Term Requested</th>
                         <th>Copies</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -103,6 +104,7 @@
                             <td>{{ $schedule->reason }}</td>
                             <td>{{ optional($schedule->schoolYear)->year ?? 'N/A' }} - {{ $schedule->semester_name ?? 'N/A' }}</td> 
                             <td>{{ $schedule->copies }}</td>
+                            <td>{{ ucfirst($schedule->status) }}</td>
                         </tr>
                     @endforeach
                 </tbody>

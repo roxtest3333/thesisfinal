@@ -58,6 +58,11 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" data-text="Files" href="{{ route('admin.file-requirements.index') }}">
+                            <i class="fas fa-file-alt"></i> <span class="nav-text">File Requirements</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" data-text="Terms" href="{{ route('admin.school-years-semesters.index') }}">
                             <i class="fas fa-book-open"></i></i> <span class="nav-text">Terms</span>
                         </a>

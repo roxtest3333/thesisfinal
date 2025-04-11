@@ -21,4 +21,8 @@ class File extends Model
 {
     return $this->belongsTo(User::class); // Assuming 'user_id' is the foreign key
 }
+public function requirements()
+{
+    return $this->hasMany(FileRequirement::class);
+}
 }

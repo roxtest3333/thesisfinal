@@ -15,7 +15,8 @@ use App\Http\Controllers\Student\ScheduleController as StudentScheduleController
 use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
 use App\Http\Controllers\Student\StudentProfileController;
 use App\Http\Controllers\Admin\ReportController;
-use App\Models\Student;
+use App\Http\Controllers\Admin\FileRequirementController;
+use App\Http\Controllers\Student\FileRequestsController;
 
 
 // Email verification routes
@@ -29,16 +30,8 @@ Route::post('/email/verification-notification', [LoginController::class, 'resend
 
 // Landing Page
 Route::get('/', function () {
-    if (Auth::guard('web')->check()) {
-        return redirect()->route('admin.dashboard');
-    }
-
-    if (Auth::guard('student')->check()) {
-        return redirect()->route('student.dashboard');
-    }
-
-    return redirect()->route('login');
-});
+    return view('landing');
+})->name('landing');
 
 // Authentication Routes for Guests
 Route::middleware('guest')->group(function () {
@@ -65,6 +58,27 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::middleware(['auth:web'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
     
+    //admin filerequirements
+        // Index - list all file requirements
+        Route::get('/file-requirements', [FileRequirementController::class, 'index'])
+        ->name('admin.file-requirements.index');
+
+        // Create - show form to create a new file requirement
+        Route::get('/file-requirements/create', [FileRequirementController::class, 'create'])
+        ->name('admin.file-requirements.create');
+
+        // Store - handle form submission to create a new file requirement
+        Route::post('/file-requirements', [FileRequirementController::class, 'store'])
+        ->name('admin.file-requirements.store');
+
+        // Edit - show form to edit an existing file requirement
+        Route::get('/file-requirements/{fileRequirement}/edit', [FileRequirementController::class, 'edit'])
+        ->name('admin.file-requirements.edit');
+
+        // Update - handle form submission to update a file requirement
+        Route::put('/file-requirements/{fileRequirement}', [FileRequirementController::class, 'update'])
+        ->name('admin.file-requirements.update');
+
     // Schedule Management
     Route::get('/schedules', [ScheduleController::class, 'index'])->name('admin.schedules.index');
     Route::get('/schedules/pending', [ScheduleController::class, 'pendingSchedules'])->name('admin.schedules.pending');
@@ -110,26 +124,48 @@ Route::middleware(['auth:web'])->prefix('admin')->group(function () {
    // School Year
     Route::get('/school-years-semesters', [SchoolYearSemesterController::class, 'index'])->name('admin.school-years-semesters.index');
     Route::post('/school-years', [SchoolYearSemesterController::class, 'storeSchoolYear'])->name('admin.school-years.store');
-    Route::delete('/admin/school-years/{id}', [SchoolYearSemesterController::class, 'destroySchoolYear'])->name('admin.school-years.destroy');
+    Route::delete('/school-years/{id}', [SchoolYearSemesterController::class, 'destroySchoolYear'])->name('admin.school-years.destroy');
     // Semester Routes
     Route::post('/semesters', [SchoolYearSemesterController::class, 'storeSemester'])->name('admin.semesters.store');
-    Route::delete('/admin/semesters/{id}', [SchoolYearSemesterController::class, 'destroySemester'])->name('admin.semesters.destroy');
+    Route::delete('/semesters/{id}', [SchoolYearSemesterController::class, 'destroySemester'])->name('admin.semesters.destroy');
 
-    // Admin Registration (Only for other admins)
-    Route::get('/register', [AdminRegisterController::class, 'showRegistrationForm'])->name('admin.register');
-    Route::post('/register', [AdminRegisterController::class, 'register']);
-});
+    
+    Route::middleware(['superadmin'])->group(function () {
+            Route::get('/register', [AdminRegisterController::class, 'showRegistrationForm'])->name('admin.register');
+            Route::post('/register', [AdminRegisterController::class, 'register']);
+            });
+    });
 
     // Student Routes
     Route::middleware(['auth:student'])->prefix('student')->group(function () {
-    Route::get('/dashboard', [StudentDashboardController::class, 'index'])->name('student.dashboard');
-    Route::get('/schedule', [StudentScheduleController::class, 'create'])->name('student.schedules.create');
-    Route::post('/schedule', [StudentScheduleController::class, 'store'])->name('student.schedules.store');
-    Route::get('/profile', [StudentProfileController::class, 'show'])->name('student.profile.show');
-    Route::get('/profile/edit', [StudentProfileController::class, 'edit'])->name('student.profile.edit');
-    Route::put('/profile', [StudentProfileController::class, 'update'])->name('student.profile.update');
-    Route::get('/student/history', [App\Http\Controllers\Student\DashboardController::class, 'studentHistory'])->name('student.history');
-    Route::post('/student/schedules/{id}/cancel', [StudentScheduleController::class, 'cancelRequest'])->name('student.schedules.cancel');});
+        //file requirements
+            Route::get('/file-requests/create', [FileRequestsController::class, 'create'])->name('student.file_requests.create');
+            Route::post('/file-requests', [FileRequestsController::class, 'store'])->name('student.file_requests.store');
+            Route::delete('/file-requests/{id}/cancel', [FileRequestsController::class, 'cancelRequest'])->name('file-requests.cancel');
+            Route::get('/file-requirements/{id}', [FileRequestsController::class, 'getRequirements'])->name('student.file-requirements.get');
+        
+        // Dashboard
+            Route::get('/dashboard', [StudentDashboardController::class, 'index'])->name('student.dashboard');
+        // Request History
+            Route::get('/history', [StudentDashboardController::class, 'studentHistory'])->name('student.history');
+            Route::get('/history/sort/{sortBy}', [StudentDashboardController::class, 'sortRequests'])->name('student.requests.sort');
+        // Request Management
+            Route::delete('/requests/{id}/cancel', [StudentDashboardController::class, 'cancelRequest'])->name('student.schedules.cancel');
+    
+        /* Route::get('/schedule', [StudentScheduleController::class, 'create'])->name('student.schedules.create');
+        Route::post('/schedule', [StudentScheduleController::class, 'store'])->name('student.schedules.store');
+        Route::post('/student/schedules/{id}/cancel', [StudentScheduleController::class, 'cancelRequest'])->name('student.schedules.cancel');
+ */
+        Route::get('/profile', [StudentProfileController::class, 'show'])->name('student.profile.show');
+        Route::get('/profile/edit', [StudentProfileController::class, 'edit'])->name('student.profile.edit');
+        Route::put('/profile', [StudentProfileController::class, 'update'])->name('student.profile.update');
+       
+    });   
+
+
+        Route::get('/csrf-token', function() {
+        return csrf_token();
+});
     
 /* Route::get('/debug-log', function() {
     return response()->file(storage_path('logs/laravel.log'));

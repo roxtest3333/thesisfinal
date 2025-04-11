@@ -17,9 +17,17 @@ class User extends Authenticatable
         'faculty_id',
         'email',
         'password',
-        'is_admin'
+        'is_admin',
+        'role',
     ];
-
+    public function isSuperAdmin()
+    {
+        return $this->role === 'super_admin';
+    }
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
     
     protected $hidden = [
         'password',

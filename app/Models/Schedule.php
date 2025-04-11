@@ -21,7 +21,8 @@ class Schedule extends Model
         'remarks',
         'manual_school_year',  
         'manual_semester',  
-        'copies'
+        'copies',
+        'reference_id',
     ];
     
 
@@ -42,6 +43,9 @@ public function schoolYear()
 public function semester()
 {
     return $this->belongsTo(Semester::class);
+}
+public function followupRequest() {
+    return $this->hasOne(Schedule::class, 'reference_id');
 }
 
 }
