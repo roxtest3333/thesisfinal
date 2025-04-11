@@ -42,6 +42,9 @@ class ScheduleController extends Controller
     
         if ($request->status) {
             $query->where('status', $request->status);
+        } else {
+            // By default, show active schedules (exclude completed)
+            $query->whereIn('status', ['pending', 'approved', 'rejected']);
         }
     
         if ($request->school_year_id) {
@@ -59,8 +62,8 @@ class ScheduleController extends Controller
         if ($sortField === 'student_id') {
             $query->join('students', 'schedules.student_id', '=', 'students.id')
                 ->select('schedules.*')
-                ->orderBy('students.first_name', $sortDirection)
-                ->orderBy('students.last_name', $sortDirection);
+                ->orderBy('students.last_name', $sortDirection)
+                ->orderBy('students.first_name', $sortDirection);
         } elseif ($sortField === 'file_id') {
             $query->join('files', 'schedules.file_id', '=', 'files.id')
                 ->select('schedules.*')
@@ -69,8 +72,9 @@ class ScheduleController extends Controller
             $query->orderBy($sortField, $sortDirection);
         }
     
-        // Paginate results
+        // Paginate results with query string
         $schedules = $query->paginate(10);
+        $schedules->appends(request()->query());
     
         return view('admin.schedules.index', compact(
             'schedules', 
@@ -82,56 +86,68 @@ class ScheduleController extends Controller
         ));
     }
     
+    public function pendingSchedules()
+    {
+        $schedules = Schedule::with(['student', 'file'])
+            ->where('status', 'pending')
+            ->orderBy('preferred_date', 'asc')
+            ->paginate(10);
 
-public function weeklySchedules(Request $request)
-{
-    $selectedDay = $request->query('day');
-
-    $query = Schedule::with(['student', 'file'])
-        ->whereBetween('preferred_date', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])
-        ->where('status', 'approved') // Ensure only approved schedules are retrieved
-        ->orderBy('preferred_date', 'asc')
-        ->orderBy('preferred_time', 'asc');
-
-    if ($selectedDay) {
-        $query->whereDate('preferred_date', Carbon::parse($selectedDay));
+        return view('admin.schedules.pending', compact('schedules'));
     }
 
-    $schedules = $query->paginate(10);
-
-    // Count the number of approved schedules per day for the weekly summary
-    $weeklyCounts = Schedule::whereBetween('preferred_date', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])
-        ->where('status', 'approved') // Ensure only approved schedules are counted
-        ->selectRaw('preferred_date, COUNT(*) as count')
-        ->groupBy('preferred_date')
-        ->pluck('count', 'preferred_date');
-
-    return view('admin.schedules.weekly', compact('schedules', 'selectedDay', 'weeklyCounts'));
-}
-
-
-    public function getSchedulesByDateRange(Request $request)
+    public function todaySchedules()
     {
-        $startDate = Carbon::parse($request->start_date);
-        $endDate = Carbon::parse($request->end_date);
+        $today = Carbon::today();
+
+        $schedules = Schedule::with(['student', 'file'])
+            ->whereDate('preferred_date', $today) 
+            ->whereIn('status', ['approved', 'completed'])
+            ->orderBy('preferred_time', 'asc') 
+            ->paginate(10);
+
+        return view('admin.schedules.today', compact('schedules'));
+    }
+
+    public function weeklySchedules(Request $request)
+    {
+        $selectedDay = $request->query('day');
+
+        $query = Schedule::with(['student', 'file'])
+            ->whereBetween('preferred_date', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])
+            ->whereIn('status', ['approved', 'completed'])
+            ->orderBy('preferred_date', 'asc')
+            ->orderBy('preferred_time', 'asc');
+
+        if ($selectedDay) {
+            $query->whereDate('preferred_date', Carbon::parse($selectedDay));
+        }
+
+        $schedules = $query->paginate(10)->withQueryString();
+
+        // Count the number of approved schedules per day for the weekly summary
+        $weeklyCounts = Schedule::whereBetween('preferred_date', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])
+            ->whereIn('status', ['approved', 'completed'])
+            ->selectRaw('preferred_date, COUNT(*) as count')
+            ->groupBy('preferred_date')
+            ->pluck('count', 'preferred_date');
+
+        return view('admin.schedules.weekly', compact('schedules', 'selectedDay', 'weeklyCounts'));
+    }
+
+    public function completedSchedules(Request $request)
+    {
+        $startDate = $request->get('start_date') ? Carbon::parse($request->get('start_date')) : Carbon::today()->subDays(7);
+        $endDate = $request->get('end_date') ? Carbon::parse($request->get('end_date')) : Carbon::today();
         
         $schedules = Schedule::with(['student', 'file'])
-            ->whereBetween('preferred_date', [$startDate, $endDate])
-            ->where('status', 'approved')
-            ->get()
-            ->map(function ($schedule) {
-                return [
-                    'id' => $schedule->id,
-                    'title' => optional($schedule->file)->file_name ?? 'No File',
-                    'studentName' => optional($schedule->student)->name ?? 'Unknown Student',
-                    'date' => $schedule->preferred_date,
-                    'timeSlot' => $schedule->preferred_time,
-                    'status' => $schedule->status,
-                    'remarks' => $schedule->remarks
-                ];
-            });
-
-        return response()->json($schedules);
+            ->where('status', 'completed')
+            ->whereBetween('completed_at', [$startDate->startOfDay(), $endDate->endOfDay()])
+            ->orderBy('completed_at', 'desc')
+            ->paginate(10)
+            ->withQueryString();
+            
+        return view('admin.schedules.completed', compact('schedules', 'startDate', 'endDate'));
     }
 
     public function approve(Schedule $schedule)
@@ -144,45 +160,34 @@ public function weeklySchedules(Request $request)
     }
 
     public function reject(Request $request, Schedule $schedule)
-{
-    $request->validate([
-        'rejection_reason' => 'required|string|max:255',
-    ]);
-
-    $schedule->update([
-        'status' => 'rejected',
-        'remarks' => $request->rejection_reason,
-    ]);
-
-    return redirect()->back()->with('success', 'Schedule rejected successfully.');
-}
-
-
-    public function pendingSchedules()
     {
-        $schedules = Schedule::with(['student', 'file'])
-            ->where('status', 'pending')
-            ->orderBy('preferred_date', 'asc')
-            ->paginate(10);
+        $request->validate([
+            'rejection_reason' => 'required|string|max:255',
+        ]);
 
-        return view('admin.schedules.pending', compact('schedules'));
+        $schedule->update([
+            'status' => 'rejected',
+            'remarks' => $request->rejection_reason,
+            'rejected_at' => now()
+        ]);
+
+        return redirect()->back()->with('success', 'Schedule rejected successfully.');
     }
+    
+    public function complete(Request $request, Schedule $schedule)
+    {
+        $request->validate([
+            'completion_notes' => 'nullable|string|max:255',
+        ]);
 
-    public function todaySchedules()
-{
-    $today = Carbon::today(); // Get today's date
+        $schedule->update([
+            'status' => 'completed',
+            'completed_at' => now(),
+            'remarks' => $request->completion_notes ? $request->completion_notes : $schedule->remarks
+        ]);
 
-    $schedules = Schedule::with(['student', 'file'])
-        ->whereDate('preferred_date', $today) 
-        ->where('status', 'approved') 
-        ->orderBy('preferred_time', 'asc') 
-        ->paginate(10);
-
-    return view('admin.schedules.today', compact('schedules'));
-}
-
-
-   
+        return redirect()->back()->with('success', 'Schedule marked as completed successfully.');
+    }
 
     public function studentSchedules($studentId)
     {

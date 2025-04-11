@@ -80,20 +80,21 @@ Route::middleware(['auth:web'])->prefix('admin')->group(function () {
         ->name('admin.file-requirements.update');
 
     // Schedule Management
-    Route::get('/schedules', [ScheduleController::class, 'index'])->name('admin.schedules.index');
-    Route::get('/schedules/pending', [ScheduleController::class, 'pendingSchedules'])->name('admin.schedules.pending');
-    Route::get('/schedules/today', [ScheduleController::class, 'todaySchedules'])->name('admin.schedules.today');
-    Route::get('/schedules/weekly', [ScheduleController::class, 'weeklySchedules'])->name('admin.schedules.weekly');
-    Route::patch('/schedules/{schedule}/approve', [ScheduleController::class, 'approve'])->name('schedules.approve');
-    Route::patch('/schedules/{schedule}/reject', [ScheduleController::class, 'reject'])->name('schedules.reject');
-    Route::get('/api/schedule/weekly', [ScheduleController::class, 'getWeeklySchedule'])->name('api.schedule.weekly');
-    Route::get('/schedules/date-range', [ScheduleController::class, 'getSchedulesByDateRange'])->name('admin.schedules.date-range');
-
-    
+        Route::get('/schedules', [ScheduleController::class, 'index'])->name('admin.schedules.index');
+        Route::get('/schedules/pending', [ScheduleController::class, 'pendingSchedules'])->name('admin.schedules.pending');
+        Route::get('/schedules/today', [ScheduleController::class, 'todaySchedules'])->name('admin.schedules.today');
+        Route::get('/schedules/weekly', [ScheduleController::class, 'weeklySchedules'])->name('admin.schedules.weekly');
+        Route::patch('/schedules/{schedule}/approve', [ScheduleController::class, 'approve'])->name('schedules.approve');
+        Route::patch('/schedules/{schedule}/reject', [ScheduleController::class, 'reject'])->name('schedules.reject');
+        Route::get('/api/schedule/weekly', [ScheduleController::class, 'getWeeklySchedule'])->name('api.schedule.weekly');
+        Route::get('/schedules/date-range', [ScheduleController::class, 'getSchedulesByDateRange'])->name('admin.schedules.date-range');
+        Route::get('/schedules/completed', [ScheduleController::class, 'completedSchedules'])->name('admin.schedules.completed');
+        Route::patch('/admin/schedules/{schedule}/complete', [ScheduleController::class, 'complete'])->name('schedules.complete');
+   
     // Report Management
-    Route::get('/reports', [ReportController::class, 'index'])->name('admin.reports.index');
-    Route::get('/reports/export-pdf', [ReportController::class, 'exportPDF'])->name('admin.reports.export');
-    Route::get('/reports/student/{id}', [ReportController::class, 'studentReport'])->name('admin.reports.student');
+        Route::get('/reports', [ReportController::class, 'index'])->name('admin.reports.index');
+        Route::get('/reports/export-pdf', [ReportController::class, 'exportPDF'])->name('admin.reports.export');
+        Route::get('/reports/student/{id}', [ReportController::class, 'studentReport'])->name('admin.reports.student');
 
 
     // Student Management
