@@ -295,7 +295,7 @@
                 </div>
                 
                 <div class="mb-3">
-                    <label for="modal-reason" class="form-label">Purpose/Reason:</label>
+                    <label for="modal-reason" class="form-label">Purpose/Reason: Required*</label>
                     <textarea class="form-control" id="modal-reason" rows="3" placeholder="Please specify your purpose for requesting this document"></textarea>
                 </div>
                 

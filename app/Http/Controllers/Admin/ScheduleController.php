@@ -40,8 +40,13 @@ class ScheduleController extends Controller
             $query->where('file_id', $request->file_id);
         }
     
+        // Handle status filter (can be single value or comma-separated)
         if ($request->status) {
-            $query->where('status', $request->status);
+            $statuses = is_array($request->status) 
+                ? $request->status 
+                : explode(',', $request->status);
+            
+            $query->whereIn('status', $statuses);
         } else {
             // By default, show active schedules (exclude completed)
             $query->whereIn('status', ['pending', 'approved', 'rejected']);
@@ -53,6 +58,29 @@ class ScheduleController extends Controller
     
         if ($request->semester_id) {
             $query->where('semester_id', $request->semester_id);
+        }
+    
+        // Date range filtering
+        if ($request->start_date) {
+            $query->whereDate('preferred_date', '>=', $request->start_date);
+        }
+    
+        if ($request->end_date) {
+            $query->whereDate('preferred_date', '<=', $request->end_date);
+        }
+    
+        // Enhanced search by student name or ID
+        if ($request->search) {
+            $searchTerm = '%' . preg_replace('/\s+/', '%', trim($request->search)) . '%';
+            $query->whereHas('student', function($q) use ($searchTerm) {
+                $q->where('student_id', 'LIKE', $searchTerm)
+                  ->orWhere('first_name', 'LIKE', $searchTerm)
+                  ->orWhere('last_name', 'LIKE', $searchTerm)
+                  ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", [$searchTerm])
+                  ->orWhereRaw("CONCAT(last_name, ' ', first_name) LIKE ?", [$searchTerm])
+                  ->orWhereRaw("CONCAT(last_name, ', ', first_name) LIKE ?", [$searchTerm])
+                  ->orWhereRaw("LOWER(CONCAT(first_name, ' ', last_name)) LIKE LOWER(?)", [$searchTerm]);
+            });
         }
     
         // Exclude canceled schedules

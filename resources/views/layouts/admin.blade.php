@@ -21,7 +21,7 @@
         
             <!-- PRMSU Logo -->
             <div class="sidebar-logo text-center p-3">
-                <img src="{{ asset('images/PRMSU.png') }}" alt="PRMSU Logo">
+                <img src="{{ asset('images/prmsu-logo-big.png') }}" alt="PRMSU Logo">
             </div>
         
             <div class="p-3">

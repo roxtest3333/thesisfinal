@@ -3,9 +3,9 @@
 @section('content')
 <div class="container mx-auto px-4 w-full">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="text-2xl font-semibold">Schedule Reports</h2>
+        <h2 class="text-2xl font-semibold">Requests Report</h2>
         <a href="{{ route('admin.schedules.index') }}" class="archived-link">
-            <i class="fas fa-calendar"></i> View Schedule Management
+            <i class="fas fa-calendar"></i> View Requests Management
         </a>
     </div>
 

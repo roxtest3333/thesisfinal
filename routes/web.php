@@ -34,15 +34,13 @@ Route::get('/', function () {
 })->name('landing');
 
 // Authentication Routes for Guests
-Route::middleware('guest')->group(function () {
-    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [LoginController::class, 'login']);
+    Route::middleware('guest')->group(function () {
+        Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+        Route::post('/login', [LoginController::class, 'login']);
 
-    Route::get('/register', [StudentRegisterController::class, 'showRegistrationForm'])->name('register');
-    Route::post('/register', [StudentRegisterController::class, 'register']);
-
-   
-});
+        Route::get('/register', [StudentRegisterController::class, 'showRegistrationForm'])->name('register');
+        Route::post('/register', [StudentRegisterController::class, 'register']);  
+    });
 
 Route::get('/forgot-password', [StudentForgotPasswordController::class, 'showForgotPasswordForm'])->name('student.password.request');
 Route::post('/forgot-password', [StudentForgotPasswordController::class, 'sendResetLink'])->name('student.password.email');
@@ -56,7 +54,21 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // Admin Routes
 Route::middleware(['auth:web'])->prefix('admin')->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+        Route::get('/schedules/today', [DashboardController::class, 'todayAppointments'])->name('admin.schedules.today');
+        Route::get('/schedules/weekly', [DashboardController::class, 'weeklyAppointments'])->name('admin.schedules.weekly');
+        Route::get('/schedules/monthly', [DashboardController::class, 'monthlyAppointments'])->name('admin.schedules.monthly');
+        
+    // Schedule Management
+        Route::get('/schedules', [ScheduleController::class, 'index'])->name('admin.schedules.index');
+        Route::get('/schedules/pending', [ScheduleController::class, 'approvedSchedules'])->name('admin.schedules.approved');
+        Route::get('/schedules/pending', [ScheduleController::class, 'rejectedSchedules'])->name('admin.schedules.rejected');
+        Route::patch('/schedules/{schedule}/approve', [ScheduleController::class, 'approve'])->name('schedules.approve');
+        Route::patch('/schedules/{schedule}/reject', [ScheduleController::class, 'reject'])->name('schedules.reject');
+        Route::get('/api/schedule/weekly', [ScheduleController::class, 'getWeeklySchedule'])->name('api.schedule.weekly');
+        Route::get('/schedules/date-range', [ScheduleController::class, 'getSchedulesByDateRange'])->name('admin.schedules.date-range');
+        Route::get('/schedules/completed', [ScheduleController::class, 'completedSchedules'])->name('admin.schedules.completed');
+        Route::patch('/admin/schedules/{schedule}/complete', [ScheduleController::class, 'complete'])->name('schedules.complete');
     
     //admin filerequirements
         Route::get('/file-requirements', [FileRequirementController::class, 'index'])->name('admin.file-requirements.index');
@@ -65,19 +77,7 @@ Route::middleware(['auth:web'])->prefix('admin')->group(function () {
         Route::get('/file-requirements/{fileRequirement}/edit', [FileRequirementController::class, 'edit'])->name('admin.file-requirements.edit');
         Route::put('/file-requirements/{fileRequirement}', [FileRequirementController::class, 'update'])->name('admin.file-requirements.update');
         Route::delete('/file-requirements/{fileRequirement}', [FileRequirementController::class, 'destroy'])->name('admin.file-requirements.destroy');
-        
-    // Schedule Management
-        Route::get('/schedules', [ScheduleController::class, 'index'])->name('admin.schedules.index');
-        Route::get('/schedules/pending', [ScheduleController::class, 'pendingSchedules'])->name('admin.schedules.pending');
-        Route::get('/schedules/today', [ScheduleController::class, 'todaySchedules'])->name('admin.schedules.today');
-        Route::get('/schedules/weekly', [ScheduleController::class, 'weeklySchedules'])->name('admin.schedules.weekly');
-        Route::patch('/schedules/{schedule}/approve', [ScheduleController::class, 'approve'])->name('schedules.approve');
-        Route::patch('/schedules/{schedule}/reject', [ScheduleController::class, 'reject'])->name('schedules.reject');
-        Route::get('/api/schedule/weekly', [ScheduleController::class, 'getWeeklySchedule'])->name('api.schedule.weekly');
-        Route::get('/schedules/date-range', [ScheduleController::class, 'getSchedulesByDateRange'])->name('admin.schedules.date-range');
-        Route::get('/schedules/completed', [ScheduleController::class, 'completedSchedules'])->name('admin.schedules.completed');
-        Route::patch('/admin/schedules/{schedule}/complete', [ScheduleController::class, 'complete'])->name('schedules.complete');
-   
+
     // Report Management
         Route::get('/reports', [ReportController::class, 'index'])->name('admin.reports.index');
         Route::get('/reports/export-pdf', [ReportController::class, 'exportPDF'])->name('admin.reports.export');
@@ -104,18 +104,18 @@ Route::middleware(['auth:web'])->prefix('admin')->group(function () {
         'destroy' => 'admin.files.destroy',
     ]);
     
-
+    
     // Settings Management
     Route::get('/settings', [SettingController::class, 'index'])->name('admin.settings.index');
     Route::post('/settings', [SettingController::class, 'update'])->name('admin.settings.update');
 
    // School Year
-    Route::get('/school-years-semesters', [SchoolYearSemesterController::class, 'index'])->name('admin.school-years-semesters.index');
-    Route::post('/school-years', [SchoolYearSemesterController::class, 'storeSchoolYear'])->name('admin.school-years.store');
-    Route::delete('/school-years/{id}', [SchoolYearSemesterController::class, 'destroySchoolYear'])->name('admin.school-years.destroy');
+        Route::get('/school-years-semesters', [SchoolYearSemesterController::class, 'index'])->name('admin.school-years-semesters.index');
+        Route::post('/school-years', [SchoolYearSemesterController::class, 'storeSchoolYear'])->name('admin.school-years.store');
+        Route::delete('/school-years/{id}', [SchoolYearSemesterController::class, 'destroySchoolYear'])->name('admin.school-years.destroy');
     // Semester Routes
-    Route::post('/semesters', [SchoolYearSemesterController::class, 'storeSemester'])->name('admin.semesters.store');
-    Route::delete('/semesters/{id}', [SchoolYearSemesterController::class, 'destroySemester'])->name('admin.semesters.destroy');
+        Route::post('/semesters', [SchoolYearSemesterController::class, 'storeSemester'])->name('admin.semesters.store');
+        Route::delete('/semesters/{id}', [SchoolYearSemesterController::class, 'destroySemester'])->name('admin.semesters.destroy');
 
     
     Route::middleware(['superadmin'])->group(function () {
