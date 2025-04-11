@@ -19,7 +19,7 @@ class StudentRegisterController extends Controller
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'student_id' => ['required', 'regex:/^\d{2}-\d{5}$/', 'unique:students,student_id'],
+            'student_id' => ['required', 'regex:/^\d{2}-\d{6}$/', 'unique:students,student_id'],
             'first_name' => ['required', 'string', 'max:255', 'regex:/^[A-Za-z]+$/'],
             'last_name' => ['required', 'string', 'max:255', 'regex:/^[A-Za-z]+$/'],
             'email' => ['required', 'email', 'unique:students,email'],
