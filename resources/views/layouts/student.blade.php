@@ -59,7 +59,7 @@
                     <!-- Centered Title -->
                     <div class="mx-auto text-center">
                         <span class="navbar-brand m-0" style="font-weight: bold;">
-                            File-Retrieval System
+                            PRMSU Document Request Portal
                         </span>
                     </div>
                     

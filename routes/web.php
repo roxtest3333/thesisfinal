@@ -59,26 +59,13 @@ Route::middleware(['auth:web'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
     
     //admin filerequirements
-        // Index - list all file requirements
-        Route::get('/file-requirements', [FileRequirementController::class, 'index'])
-        ->name('admin.file-requirements.index');
-
-        // Create - show form to create a new file requirement
-        Route::get('/file-requirements/create', [FileRequirementController::class, 'create'])
-        ->name('admin.file-requirements.create');
-
-        // Store - handle form submission to create a new file requirement
-        Route::post('/file-requirements', [FileRequirementController::class, 'store'])
-        ->name('admin.file-requirements.store');
-
-        // Edit - show form to edit an existing file requirement
-        Route::get('/file-requirements/{fileRequirement}/edit', [FileRequirementController::class, 'edit'])
-        ->name('admin.file-requirements.edit');
-
-        // Update - handle form submission to update a file requirement
-        Route::put('/file-requirements/{fileRequirement}', [FileRequirementController::class, 'update'])
-        ->name('admin.file-requirements.update');
-
+        Route::get('/file-requirements', [FileRequirementController::class, 'index'])->name('admin.file-requirements.index');
+        Route::get('/file-requirements/create', [FileRequirementController::class, 'create'])->name('admin.file-requirements.create');
+        Route::post('/file-requirements', [FileRequirementController::class, 'store'])->name('admin.file-requirements.store');
+        Route::get('/file-requirements/{fileRequirement}/edit', [FileRequirementController::class, 'edit'])->name('admin.file-requirements.edit');
+        Route::put('/file-requirements/{fileRequirement}', [FileRequirementController::class, 'update'])->name('admin.file-requirements.update');
+        Route::delete('/file-requirements/{fileRequirement}', [FileRequirementController::class, 'destroy'])->name('admin.file-requirements.destroy');
+        
     // Schedule Management
         Route::get('/schedules', [ScheduleController::class, 'index'])->name('admin.schedules.index');
         Route::get('/schedules/pending', [ScheduleController::class, 'pendingSchedules'])->name('admin.schedules.pending');

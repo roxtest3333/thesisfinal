@@ -34,11 +34,11 @@
                     </td>
                     <td>
                         <a href="{{ route('admin.files.edit', $file->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                        <form action="{{ route('admin.files.destroy', $file->id) }}" method="POST" style="display:inline;">
+                        {{-- <form action="{{ route('admin.files.destroy', $file->id) }}" method="POST" style="display:inline;">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</button>
-                        </form>
+                        </form> --}}
                     </td>
                     <td>{{ $file->user->name ?? 'Unknown' }}</td> <!-- Moved to Last Column -->
                 </tr>

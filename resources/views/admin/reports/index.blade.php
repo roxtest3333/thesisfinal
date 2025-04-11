@@ -53,6 +53,18 @@
                 </select>
             </div>
 
+            <div>
+                <label class="block text-gray-700 font-bold mb-1">Status</label>
+                <select name="status" class="form-control">
+                    <option value="">All Statuses</option>
+                    <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                    <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>Approved</option>
+                    <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>Rejected</option>
+                    <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed</option>
+                    <option value="canceled" {{ request('status') == 'canceled' ? 'selected' : '' }}>Canceled</option>
+                </select>
+            </div>
+
             <div class="flex gap-2">
                 <button type="submit" class="btn btn-primary mt-6">
                     <i class="fas fa-filter"></i> Apply Filters
@@ -75,7 +87,8 @@
             <table class="schedule-table w-full" id="reportTable">
                 <thead>
                     <tr>
-                        <th>Student</th>
+                        <th>Student ID</th>
+                        <th>Student Name</th>
                         <th>File</th>
                         <th>Date</th>
                         <th>Time</th>
@@ -83,12 +96,14 @@
                         <th>Term Requested</th>
                         <th>Copies</th>
                         <th>Status</th>
+                        <th>Completion Date</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($schedules as $schedule)
                         <tr>
-                            <td>{{ $schedule->student->first_name ?? 'N/A' }} {{ $schedule->student->last_name ?? '' }}</td>
+                            <td>{{ $schedule->student->student_id ?? 'N/A' }}</td>
+                            <td>{{ $schedule->student->last_name ?? 'N/A' }}, {{ $schedule->student->first_name ?? '' }}</td>
                             <td>
                                 {{ optional($schedule->file)->file_name ?? 'N/A' }}
                                 
@@ -105,6 +120,13 @@
                             <td>{{ optional($schedule->schoolYear)->year ?? 'N/A' }} - {{ $schedule->semester_name ?? 'N/A' }}</td> 
                             <td>{{ $schedule->copies }}</td>
                             <td>{{ ucfirst($schedule->status) }}</td>
+                            <td>
+                                @if($schedule->status == 'completed' && $schedule->completed_at)
+                                    {{ \Carbon\Carbon::parse($schedule->completed_at)->format('M d, Y H:i') }}
+                                @else
+                                    -
+                                @endif
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -125,11 +147,24 @@
     function printReport() {
         var printContents = document.getElementById('reportTable').outerHTML;
         var originalContents = document.body.innerHTML;
-
-        document.body.innerHTML = "<h2>Schedule Report</h2>" + printContents;
-        window.print();
-        document.body.innerHTML = originalContents;
-        location.reload();
+        
+        var printWindow = window.open('', '_blank');
+        printWindow.document.write('<html><head><title>Schedule Report</title>');
+        printWindow.document.write('<style>');
+        printWindow.document.write('table { width: 100%; border-collapse: collapse; }');
+        printWindow.document.write('th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }');
+        printWindow.document.write('th { background-color: #f2f2f2; }');
+        printWindow.document.write('</style>');
+        printWindow.document.write('</head><body>');
+        printWindow.document.write('<h2 style="text-align: center;">Schedule Report</h2>');
+        printWindow.document.write('<div>Generated on: ' + new Date().toLocaleString() + '</div><br>');
+        printWindow.document.write(printContents);
+        printWindow.document.write('</body></html>');
+        
+        printWindow.document.close();
+        printWindow.focus();
+        printWindow.print();
+        printWindow.close();
     }
 </script>
 @endsection

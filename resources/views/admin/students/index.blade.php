@@ -50,11 +50,11 @@
                     <td>{{ $student->contact_number }}</td>
                     <td>
                         <a href="{{ route('admin.students.edit', $student->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                        <button class="btn btn-danger btn-sm delete-student" 
+                        {{-- <button class="btn btn-danger btn-sm delete-student" 
                             data-id="{{ $student->id }}"  
                             data-student-name="{{ $student->last_name }}, {{ $student->first_name }}">
                             Delete
-                        </button>
+                        </button> --}}
                     </td>
                 </tr>
             @endforeach

@@ -31,10 +31,6 @@
                 <form method="POST" action="{{ route('admin.semesters.store') }}">
                     @csrf
                     <div class="mb-3">
-                        <label class="form-label">Semester Name</label>
-                        <input type="text" name="name" class="form-control" placeholder="e.g., 1st Semester" required>
-                    </div>
-                    <div class="mb-3">
                         <label class="form-label">School Year</label>
                         <select name="school_year_id" class="form-control" required>
                             @foreach($schoolYears as $year)
@@ -42,6 +38,11 @@
                             @endforeach
                         </select>
                     </div>
+                    <div class="mb-3">
+                        <label class="form-label">Semester Name</label>
+                        <input type="text" name="name" class="form-control" placeholder="e.g., 1st Semester" required>
+                    </div>
+                    
                     <button type="submit" class="btn btn-primary">Add Semester</button>
                 </form>
             </div>
@@ -69,11 +70,11 @@
                                     @foreach($year->semesters as $semester)
                                     <li class="d-flex align-items-center pb-2">
                                         <span class="flex-grow-1">{{ $semester->name }}</span>
-                                        <form action="{{ route('admin.semesters.destroy', $semester->id) }}" method="POST" class="m-0 ml-2">
+                                        {{-- <form action="{{ route('admin.semesters.destroy', $semester->id) }}" method="POST" class="m-0 ml-2">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-sm btn-danger p-1">Delete</button>
-                                        </form>
+                                        </form> --}}
                                     </li>
                                     @endforeach
                                 </ul>
@@ -82,11 +83,11 @@
                             @endif
                         </td>
                         <td>
-                            <form action="{{ route('admin.school-years.destroy', $year->id) }}" method="POST" class="d-inline">
+                            {{-- <form action="{{ route('admin.school-years.destroy', $year->id) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-sm btn-danger">Delete School Year</button>
-                            </form>
+                            </form> --}}
                         </td>
                     </tr>
                 @endforeach

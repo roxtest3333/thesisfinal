@@ -247,8 +247,8 @@
     let value = this.value.replace(/[^\d-]/g, ""); 
     
     // If user tries to type beyond format, stop them
-    if (value.replace(/-/g, "").length > 8) {
-        this.value = value.slice(0, 11); // 11 because of hyphen positions
+    if (value.replace(/-/g, "").length > 9) {
+        this.value = value.slice(0, 12); // 11 because of hyphen positions
         return;
     }
     
