@@ -11,7 +11,6 @@ use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Admin\FileController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SchoolYearSemesterController;
-use App\Http\Controllers\Student\ScheduleController as StudentScheduleController;
 use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
 use App\Http\Controllers\Student\StudentProfileController;
 use App\Http\Controllers\Admin\ReportController;
@@ -141,10 +140,6 @@ Route::middleware(['auth:web'])->prefix('admin')->group(function () {
         // Request Management
             Route::delete('/requests/{id}/cancel', [StudentDashboardController::class, 'cancelRequest'])->name('student.schedules.cancel');
     
-        /* Route::get('/schedule', [StudentScheduleController::class, 'create'])->name('student.schedules.create');
-        Route::post('/schedule', [StudentScheduleController::class, 'store'])->name('student.schedules.store');
-        Route::post('/student/schedules/{id}/cancel', [StudentScheduleController::class, 'cancelRequest'])->name('student.schedules.cancel');
- */
         Route::get('/profile', [StudentProfileController::class, 'show'])->name('student.profile.show');
         Route::get('/profile/edit', [StudentProfileController::class, 'edit'])->name('student.profile.edit');
         Route::put('/profile', [StudentProfileController::class, 'update'])->name('student.profile.update');

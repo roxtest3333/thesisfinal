@@ -53,7 +53,7 @@
     <script>
     // Improved Logout Timer
     (function() {
-        const INACTIVE_TIMEOUT = 60 * 60 * 1000; // 30 minutes
+        const INACTIVE_TIMEOUT = 1440 * 60 * 1000; 
         let logoutTimer;
 
         function resetLogoutTimer() {
