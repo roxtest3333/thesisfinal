@@ -12,8 +12,8 @@
 </script>
 
 <!-- Background with subtle gradient -->
-<div class="bg-gradient-to-b from-white to-indigo-50 ">
-    <div class="container mx-auto px-4 sm:px-6 py-8 md:py-12 lg:py-8">
+<div class="bg-gradient-to-b from-white to-indigo-50 overflow-x-hidden">
+    <div class="container mx-auto px-4 sm:px-6 py-8 md:py-12 lg:py-8 w-full">
         <!-- Hero Section - Improved Mobile Stacking -->
         <section class="flex flex-col-reverse md:flex-row items-center gap-8 md:gap-12 lg:gap-16">
             <!-- Text Content (Now comes first in DOM for better mobile flow) -->

@@ -14,6 +14,7 @@
             <!-- Full title on desktop, short version on mobile -->
             <span class="text-lg font-semibold hidden md:block">PRMSU San Marcelino Document Request Portal</span>
             <span class="text-lg font-semibold block md:hidden">PRMSU-SM File Portal</span>
+            
         </a>
 
         <!-- Mobile Menu Button -->

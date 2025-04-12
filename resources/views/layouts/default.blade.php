@@ -32,13 +32,12 @@
       </style>
 </head>
 
-<body class="bg-gray-100 text-gray-800 bg-cover bg-center md:bg-fixed m-0 flex flex-col min-h-screen">
-
+<body class="bg-gray-100 text-gray-800 bg-cover bg-center md:bg-fixed m-0 flex flex-col min-h-screen overflow-x-hidden">
     <x-nav/>
     @includeIf('components.messages')
     
     <!-- Main Content Section -->
-    <main class="flex-grow  mx-auto p-6 @yield('main-class') mt-20">
+    <main class="flex-grow mx-auto p-4 sm:p-6 @yield('main-class') mt-20 w-full max-w-screen-2xl">
         @yield('content')
     </main> 
 
