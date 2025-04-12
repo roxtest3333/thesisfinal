@@ -1,7 +1,7 @@
 @extends('layouts.default')
 
 @section('content')
-<div class="flex justify-center items-center min-h-[calc(100vh-12rem)]">
+<div class="flex justify-center items-center min-h-[calc(100vh-24rem)] min-w-[30vw]">
     <div class="w-full max-w-md">
         <div class="bg-white rounded-xl shadow-2xl overflow-hidden transform transition duration-500 hover:scale-105">
             <!-- Card Header with Logo -->
@@ -123,7 +123,7 @@
                 </form>
 
                 <!-- Register Link -->
-                <div class="mt-8 text-center border-t border-gray-200 pt-6">
+                <div class="mt-4 text-center border-t border-gray-200 pt-6">
                     <p class="text-sm text-gray-600">Don't have an account?</p>
                     <a href="{{ route('register') }}" class="mt-2 inline-block font-medium text-blue-600 hover:text-blue-800 transition duration-200 hover:underline">
                         Create Account

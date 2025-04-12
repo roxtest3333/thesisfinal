@@ -32,7 +32,7 @@ class DashboardController extends Controller
         // Get actual counts from database
         $counts = Schedule::whereYear('preferred_date', $selectedMonth->year)
             ->whereMonth('preferred_date', $selectedMonth->month)
-            ->whereIn('status', ['approved', 'completed'])
+            ->whereIn('status', ['approved'])
             ->selectRaw('DAY(preferred_date) as day, COUNT(*) as count')
             ->groupBy('day')
             ->pluck('count', 'day');

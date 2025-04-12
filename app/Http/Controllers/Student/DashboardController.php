@@ -11,61 +11,64 @@
     class DashboardController extends Controller
     {
         public function index()
-        {
-            $student = Auth::guard('student')->user();
+{
+    $student = Auth::guard('student')->user();
 
-            // Get statistics for the dashboard
-            $totalRequests = Schedule::where('student_id', $student->id)->count();
-            
-            // Get only pending requests grouped by file type
-            $pendingSchedules = Schedule::with('file')
-                ->where('student_id', $student->id)
-                ->where('status', 'pending')
-                ->orderBy('preferred_date', 'asc')
-                ->get();
-            
-            $pendingCount = $pendingSchedules->count();
+    // Get total requests (can be used for stats)
+    $totalRequests = Schedule::where('student_id', $student->id)->count();
 
-            // Get pending compliance requests (previously 'rejected')
-            $pendingComplianceSchedules = Schedule::with('file')
+    // Pending requests
+    $pendingSchedules = Schedule::with('file')
+        ->where('student_id', $student->id)
+        ->where('status', 'pending')
+        ->orderBy('preferred_date', 'asc')
+        ->get();
+    $pendingCount = $pendingSchedules->count();
+    $pendingByType = $pendingSchedules->groupBy('file.file_name');
+
+    // Pending compliance (rejected with remarks, no followup)
+    $pendingComplianceSchedules = Schedule::with('file')
+        ->where('student_id', $student->id)
+        ->where('status', 'rejected')
+        ->whereNotNull('remarks')
+        ->whereDoesntHave('followupRequest', function($query) {
+            $query->whereIn('status', ['pending', 'processing', 'ready', 'completed', 'compliance_addressed']);
+        })
+        ->orderBy('preferred_date', 'desc')
+        ->get();
+    $pendingComplianceCount = $pendingComplianceSchedules->count();
+
+    $acceptedSchedules = Schedule::with('file')
     ->where('student_id', $student->id)
-    ->where('status', 'rejected')
-    ->whereNotNull('remarks')
-    ->whereDoesntHave('followupRequest', function($query) {
-        // Only consider valid follow-up requests that weren't cancelled
-        $query->whereIn('status', ['pending', 'processing', 'ready', 'completed', 'compliance_addressed']);
-    })
+    ->where('status', 'approved')
+    ->where('updated_at', '>=', now()->subDays(30)) // Only last 30 days
     ->orderBy('preferred_date', 'desc')
     ->get();
-            
-            $pendingComplianceCount = $pendingComplianceSchedules->count();
 
-            // Get approved requests
-            $approvedCount = Schedule::where('student_id', $student->id)
-                ->where('status', 'approved')
-                ->count();
+    $acceptedCount = $acceptedSchedules->count();
+    $acceptedByType = $acceptedSchedules->groupBy('file.file_name');
 
-            // Get recent activity (last 5 status changes)
-            $recentActivity = Schedule::with('file')
-                ->where('student_id', $student->id)
-                ->orderBy('updated_at', 'desc')
-                ->take(5)
-                ->get();
+    // Recent activity (optional)
+    $recentActivity = Schedule::with('file')
+        ->where('student_id', $student->id)
+        ->orderBy('updated_at', 'desc')
+        ->take(5)
+        ->get();
 
-            // Group pending requests by document type
-            $pendingByType = $pendingSchedules->groupBy('file.file_name');
+    return view('student.dashboard', compact(
+        'pendingSchedules', 
+        'pendingComplianceSchedules',
+        'acceptedSchedules',
+        'totalRequests',
+        'pendingCount',
+        'acceptedCount',
+        'pendingComplianceCount',
+        'recentActivity',
+        'pendingByType',
+        'acceptedByType'
+    ));
+}
 
-            return view('student.dashboard', compact(
-                'pendingSchedules', 
-                'pendingComplianceSchedules',
-                'totalRequests',
-                'pendingCount',
-                'approvedCount',
-                'pendingComplianceCount',
-                'recentActivity',
-                'pendingByType'
-            ));
-        }
 
         public function studentHistory()
         {

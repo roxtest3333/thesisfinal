@@ -13,9 +13,7 @@
     @endif
 
     <link rel="icon" href="{{ asset('images/PRMSU.png') }}">
-    <!-- Then Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x/dist/cdn.min.js"></script>
-    <!-- Other scripts -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
@@ -39,7 +37,7 @@
     @includeIf('components.messages')
     
     <!-- Main Content Section -->
-    <main class="flex-grow max-w-screen-lg mx-auto p-6 @yield('main-class') mt-20">
+    <main class="flex-grow  mx-auto p-6 @yield('main-class') mt-20">
         @yield('content')
     </main> 
 
