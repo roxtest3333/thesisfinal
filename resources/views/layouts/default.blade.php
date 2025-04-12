@@ -1,3 +1,4 @@
+{{-- resources\views\layouts\default.blade.php --}}
 <!DOCTYPE html>
 <html lang="en">
 <head>

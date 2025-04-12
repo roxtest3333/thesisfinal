@@ -1,7 +1,7 @@
-<!-- Add Alpine.js if not already present in your layout -->
+{{-- resources\views\components\nav.blade.php --}}
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-<div x-data="{ open: false }" class="bg-gray-800 fixed w-full z-20 top-0 left-0 px-6 py-4 text-white shadow-lg">
+<div x-data="{ open: false }" class="bg-gray-800 fixed w-full z-20 top-0 left-0 px-4 sm:px-6 py-4 text-white shadow-lg">
     <div class="container flex justify-between items-center mx-auto">
         <!-- Logo and Title - hide logo on mobile -->
         <a href="
