@@ -36,10 +36,12 @@
                            placeholder="Enter student name or ID" 
                            class="form-control pl-10 w-full">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                       
+                        
                     </div>
                 </div>
             </div>
+    
+            
     
             <!-- Status Filter -->
             <div>
@@ -58,18 +60,18 @@
             <!-- Date Range Filters -->
             <div>
                 <label class="block text-gray-700 font-bold mb-1">
-                    <i class="fas fa-calendar-day mr-1"></i> Start Date
+                    <i class="fas fa-calendar-day mr-1"></i> Start Preferred Date
                 </label>
                 <input type="date" name="start_date" value="{{ request('start_date') }}" class="form-control">
             </div>
     
             <div>
                 <label class="block text-gray-700 font-bold mb-1">
-                    <i class="fas fa-calendar-week mr-1"></i> End Date
+                    <i class="fas fa-calendar-week mr-1"></i> End Preferred Date
                 </label>
                 <input type="date" name="end_date" value="{{ request('end_date') }}" class="form-control">
             </div>
-            
+
             <!-- File Type Filter -->
             <div>
                 <label class="block text-gray-700 font-bold mb-1">
@@ -84,7 +86,7 @@
                     @endforeach
                 </select>
             </div>
-            
+    
             <!-- School Year Filter -->
             <div>
                 <label class="block text-gray-700 font-bold mb-1">
@@ -118,7 +120,7 @@
             <!-- Action Buttons -->
             <div class="flex gap-2 items-end">
                 <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-filter"></i> Apply Filters
+                     Apply Filters
                 </button>
                 <a href="{{ route('admin.schedules.index') }}" class="btn btn-secondary">
                     <i class="fas fa-undo"></i> Clear
@@ -169,7 +171,7 @@
                             ])) }}" 
                             class="sortable {{ request('sort') == 'preferred_date' ? 'active' : '' }}"
                             data-direction="{{ request('sort') == 'preferred_date' ? request('direction', 'asc') : 'asc' }}">
-                                Date
+                                Preferred Date
                             </a>
                         </th>
                         <th>Time</th>
@@ -183,6 +185,15 @@
                             class="sortable {{ request('sort') == 'status' ? 'active' : '' }}"
                             data-direction="{{ request('sort') == 'status' ? request('direction', 'asc') : 'asc' }}">
                                 Status
+                            </a>
+                        </th>
+                        <th>
+                            <a href="{{ route('admin.schedules.index', [
+                                'sort' => 'created_at',
+                                'direction' => request('direction', 'asc') == 'asc' ? 'desc' : 'asc'
+                            ]) }}" 
+                            class="sortable {{ request('sort') == 'created_at' ? 'active' : '' }}">
+                                Date Requested
                             </a>
                         </th>
                         <th>Actions</th>
@@ -218,6 +229,9 @@
                                 <span class="badge bg-{{ $schedule->status == 'approved' ? 'success' : ($schedule->status == 'rejected' ? 'danger' : ($schedule->status == 'completed' ? 'primary' : 'warning')) }}">
                                     {{ ucfirst($schedule->status) }}
                                 </span>
+                            </td>
+                            <td>
+                                {{ $schedule->created_at->format('M d, Y') }} 
                             </td>
                             <td>
                                 <div class="button-container">
@@ -285,7 +299,7 @@
 
         <form id="completeForm" method="POST">
             @csrf
-            @method('PATCH')
+           
             <input type="hidden" id="completeScheduleId" name="schedule_id">
             
             <label class="block text-gray-700 font-bold mb-1">Completion Notes (Optional)</label>
@@ -300,58 +314,117 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Reject Modal Functionality
-        const rejectModal = document.getElementById('rejectModal');
-        const rejectForm = document.getElementById('rejectForm');
-        const rejectScheduleId = document.getElementById('rejectScheduleId');
-        const rejectStudentName = document.getElementById('rejectStudentName');
-        const rejectionReason = document.getElementById('rejectionReason');
+document.addEventListener('DOMContentLoaded', function() {
+    // School Year and Semester Dynamic Loading
+    const schoolYearSelect = document.querySelector('select[name="school_year_id"]');
+    const semesterSelect = document.querySelector('select[name="semester_id"]');
     
-        document.querySelectorAll('.reject-btn').forEach(button => {
-            button.addEventListener('click', function () {
-                rejectScheduleId.value = this.dataset.scheduleId;
-                rejectStudentName.textContent = `Reject request for ${this.dataset.studentName}?`;
-                rejectForm.setAttribute('action', `/admin/schedules/${this.dataset.scheduleId}/reject`);
-                rejectModal.style.display = "flex";
-            });
-        });
-    
-        document.getElementById('closeRejectModal').addEventListener('click', function () {
-            rejectModal.style.display = "none";
-            rejectionReason.value = "";
-        });
-        
-        // Complete Modal Functionality
-        const completeModal = document.getElementById('completeModal');
-        const completeForm = document.getElementById('completeForm');
-        const completeScheduleId = document.getElementById('completeScheduleId');
-        const completeStudentName = document.getElementById('completeStudentName');
-        
-        document.querySelectorAll('.complete-btn').forEach(button => {
-            button.addEventListener('click', function () {
-                completeScheduleId.value = this.dataset.scheduleId;
-                completeStudentName.textContent = `Mark request for ${this.dataset.studentName} as completed?`;
-                completeForm.setAttribute('action', "{{ route('schedules.complete', ':id') }}".replace(':id', this.dataset.scheduleId));
-                completeModal.style.display = "flex";
-            });
-        });
-        
-        document.getElementById('closeCompleteModal').addEventListener('click', function () {
-            completeModal.style.display = "none";
-            document.getElementById('completionNotes').value = "";
-        });
-        
-        // Student link highlight effect
-        document.querySelectorAll('.student-link').forEach(link => {
-            link.addEventListener('mouseenter', function() {
-                this.classList.add('student-link-highlight');
-            });
+    if (schoolYearSelect && semesterSelect) {
+        schoolYearSelect.addEventListener('change', function() {
+            const schoolYearId = this.value;
             
-            link.addEventListener('mouseleave', function() {
-                this.classList.remove('student-link-highlight');
+            // Clear current semester options except the first "All Semesters" option
+            while (semesterSelect.options.length > 1) {
+                semesterSelect.remove(1);
+            }
+            
+            // If no school year is selected, just leave the default option
+            if (!schoolYearId) {
+                return;
+            }
+            
+            // Fetch semesters for the selected school year
+            fetch(`/admin/schedules/semesters?school_year_id=${schoolYearId}`, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Check if data is array before using forEach
+                if (Array.isArray(data)) {
+                    // Add new options based on the response
+                    data.forEach(semester => {
+                        const option = document.createElement('option');
+                        option.value = semester.id;
+                        option.textContent = semester.name;
+                        semesterSelect.appendChild(option);
+                    });
+                } else if (data && typeof data === 'object') {
+                    // Handle case where response is an object with array property
+                    const semestersArray = data.data || data.semesters || Object.values(data);
+                    if (Array.isArray(semestersArray)) {
+                        semestersArray.forEach(semester => {
+                            const option = document.createElement('option');
+                            option.value = semester.id;
+                            option.textContent = semester.name;
+                            semesterSelect.appendChild(option);
+                        });
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error loading semesters:', error);
             });
+        });
+    }
+    
+    // Reject Modal Functionality
+    const rejectModal = document.getElementById('rejectModal');
+    const rejectForm = document.getElementById('rejectForm');
+    const rejectScheduleId = document.getElementById('rejectScheduleId');
+    const rejectStudentName = document.getElementById('rejectStudentName');
+    const rejectionReason = document.getElementById('rejectionReason');
+
+    document.querySelectorAll('.reject-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            rejectScheduleId.value = this.dataset.scheduleId;
+            rejectStudentName.textContent = `Reject request for ${this.dataset.studentName}?`;
+            rejectForm.setAttribute('action', `/admin/schedules/${this.dataset.scheduleId}/reject`);
+            rejectModal.style.display = "flex";
         });
     });
-</script>
+
+    document.getElementById('closeRejectModal').addEventListener('click', function () {
+        rejectModal.style.display = "none";
+        rejectionReason.value = "";
+    });
+    
+    // Complete Modal Functionality
+    const completeModal = document.getElementById('completeModal');
+    const completeForm = document.getElementById('completeForm');
+    const completeScheduleId = document.getElementById('completeScheduleId');
+    const completeStudentName = document.getElementById('completeStudentName');
+    
+    document.querySelectorAll('.complete-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            completeScheduleId.value = this.dataset.scheduleId;
+            completeStudentName.textContent = `Mark request for ${this.dataset.studentName} as completed?`;
+            completeForm.setAttribute('action', `/admin/schedules/${this.dataset.scheduleId}/complete`);
+            completeModal.style.display = "flex"; // Changed from "none" to "flex" to correctly show the modal
+        });
+    });
+    
+    document.getElementById('closeCompleteModal').addEventListener('click', function () {
+        completeModal.style.display = "none";
+        document.getElementById('completionNotes').value = "";
+    });
+    
+    // Student link highlight effect
+    document.querySelectorAll('.student-link').forEach(link => {
+        link.addEventListener('mouseenter', function() {
+            this.classList.add('student-link-highlight');
+        });
+        
+        link.addEventListener('mouseleave', function() {
+            this.classList.remove('student-link-highlight');
+        });
+    });
+});</script>
 @endsection

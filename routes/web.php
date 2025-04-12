@@ -68,8 +68,9 @@ Route::middleware(['auth:web'])->prefix('admin')->group(function () {
         Route::get('/api/schedule/weekly', [ScheduleController::class, 'getWeeklySchedule'])->name('api.schedule.weekly');
         Route::get('/schedules/date-range', [ScheduleController::class, 'getSchedulesByDateRange'])->name('admin.schedules.date-range');
         Route::get('/schedules/completed', [ScheduleController::class, 'completedSchedules'])->name('admin.schedules.completed');
-        Route::patch('/admin/schedules/{schedule}/complete', [ScheduleController::class, 'complete'])->name('schedules.complete');
-    
+        Route::post('/schedules/{schedule}/complete', [ScheduleController::class, 'complete'])->name('schedules.complete');
+        Route::get('/schedules/semesters', [ScheduleController::class, 'getSemesters'])->name('admin.schedules.get-semesters');
+        
     //admin filerequirements
         Route::get('/file-requirements', [FileRequirementController::class, 'index'])->name('admin.file-requirements.index');
         Route::get('/file-requirements/create', [FileRequirementController::class, 'create'])->name('admin.file-requirements.create');

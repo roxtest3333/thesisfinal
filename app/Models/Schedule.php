@@ -23,8 +23,14 @@ class Schedule extends Model
         'manual_semester',  
         'copies',
         'reference_id',
+        'completed_at',
     ];
-    
+
+    protected $casts = [
+        'preferred_date' => 'date',  
+        'created_at' => 'date',
+        'completed_at' => 'date',
+    ];
 
     public function student()
 {

@@ -334,7 +334,7 @@
                 </div>
                 
                 <div class="mb-3">
-                    <label class="form-label">Select School Year/Semester (if applicable):</label>
+                    <label class="form-label">Select School Year/Semester of the file(if applicable):</label>
                     <div class="row">
                         <div class="col-md-6">
                             <select class="form-select" id="certificate-school-year">

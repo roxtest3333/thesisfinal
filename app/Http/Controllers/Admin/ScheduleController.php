@@ -49,7 +49,7 @@ class ScheduleController extends Controller
             $query->whereIn('status', $statuses);
         } else {
             // By default, show active schedules (exclude completed)
-            $query->whereIn('status', ['pending', 'approved', 'rejected']);
+            $query->whereIn('status', ['pending', 'approved']);
         }
     
         if ($request->school_year_id) {
@@ -114,7 +114,20 @@ class ScheduleController extends Controller
         ));
     }
     
-    public function pendingSchedules()
+    public function getSemesters(Request $request)
+    {
+        $schoolYearId = $request->input('school_year_id');
+        
+        if (!$schoolYearId) {
+            return response()->json(['message' => 'School year ID is required'], 400);
+        }
+        
+        $semesters = Semester::where('school_year_id', $schoolYearId)->get();
+        
+        return response()->json($semesters);
+    }
+
+    /* public function pendingSchedules()
     {
         $schedules = Schedule::with(['student', 'file'])
             ->where('status', 'pending')
@@ -122,7 +135,7 @@ class ScheduleController extends Controller
             ->paginate(10);
 
         return view('admin.schedules.pending', compact('schedules'));
-    }
+    } */
 
     public function todaySchedules()
     {
@@ -203,19 +216,19 @@ class ScheduleController extends Controller
     }
     
     public function complete(Request $request, Schedule $schedule)
-    {
-        $request->validate([
-            'completion_notes' => 'nullable|string|max:255',
-        ]);
+{
+    $request->validate([
+        'completion_notes' => 'nullable|string|max:255'
+    ]);
 
-        $schedule->update([
-            'status' => 'completed',
-            'completed_at' => now(),
-            'remarks' => $request->completion_notes ? $request->completion_notes : $schedule->remarks
-        ]);
+    $schedule->update([
+        'status' => 'completed',
+        'completed_at' => now(), // This saves current date+time
+        'remarks' => $request->completion_notes ?? null
+    ]);
 
-        return redirect()->back()->with('success', 'Schedule marked as completed successfully.');
-    }
+    return back()->with('success', 'Request marked as completed');
+}
 
     public function studentSchedules($studentId)
     {
