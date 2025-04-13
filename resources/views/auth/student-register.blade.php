@@ -1,7 +1,7 @@
 @extends('layouts.default')
 
 @section('content')
-<div class="flex justify-center items-center min-h-[calc(100vh-12rem)]">
+<div class="flex justify-center items-center ">
     <div class="w-full max-w-4xl">
         <div class="bg-white rounded-xl shadow-2xl overflow-hidden transform transition duration-500 hover:scale-[1.01]">
             <!-- Card Header with Logo -->

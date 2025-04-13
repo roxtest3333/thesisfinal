@@ -270,8 +270,8 @@
 </div>
 
 <!-- Rejection Modal -->
-<div id="rejectModal" class="fixed inset-0 items-center justify-center bg-gray-800 bg-opacity-50 transition-opacity duration-300 z-50" style="display: none;">
-    <div class="bg-white p-6 rounded-lg shadow-lg w-1/3">
+<div id="rejectModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-content">
         <h3 class="text-xl font-bold mb-4">Reject Schedule Request</h3>
         <p id="rejectStudentName" class="mb-2 text-gray-600"></p>
 
@@ -290,10 +290,67 @@
         </form>
     </div>
 </div>
+<style>
+    /* Modal Backdrop */
+    .modal-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1050;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .modal-backdrop[style*="display: flex"] {
+        opacity: 1;
+    }
 
+    /* Modal Content */
+    .modal-content {
+        background: white;
+        border-radius: 0.5rem;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        width: 90%;
+        max-width: 500px;
+        max-height: 90vh;
+        overflow-y: auto;
+        transform: translateY(-20px);
+        transition: transform 0.3s ease;
+        padding: 1.5rem;
+    }
+    
+    .modal-backdrop[style*="display: flex"] .modal-content {
+        transform: translateY(0);
+    }
+
+    /* Responsive adjustments */
+    @media (min-width: 640px) {
+        .modal-content {
+            width: 80%;
+        }
+    }
+    
+    @media (min-width: 768px) {
+        .modal-content {
+            width: 60%;
+        }
+    }
+    
+    @media (min-width: 1024px) {
+        .modal-content {
+            width: 40%;
+        }
+    }
+</style>
 <!-- Completion Modal -->
-<div id="completeModal" class="fixed inset-0 items-center justify-center bg-gray-800 bg-opacity-50 transition-opacity duration-300 z-50" style="display: none;">
-    <div class="bg-white p-6 rounded-lg shadow-lg w-1/3">
+<div id="completeModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-content">
         <h3 class="text-xl font-bold mb-4">Complete Schedule Request</h3>
         <p id="completeStudentName" class="mb-2 text-gray-600"></p>
 
@@ -313,8 +370,7 @@
     </div>
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
+<script>document.addEventListener('DOMContentLoaded', function() {
     // School Year and Semester Dynamic Loading
     const schoolYearSelect = document.querySelector('select[name="school_year_id"]');
     const semesterSelect = document.querySelector('select[name="semester_id"]');
@@ -328,12 +384,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 semesterSelect.remove(1);
             }
             
-            // If no school year is selected, just leave the default option
-            if (!schoolYearId) {
-                return;
-            }
+            if (!schoolYearId) return;
             
-            // Fetch semesters for the selected school year
             fetch(`/admin/schedules/semesters?school_year_id=${schoolYearId}`, {
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',
@@ -341,90 +393,137 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             })
             .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
                 return response.json();
             })
             .then(data => {
-                // Check if data is array before using forEach
-                if (Array.isArray(data)) {
-                    // Add new options based on the response
-                    data.forEach(semester => {
-                        const option = document.createElement('option');
-                        option.value = semester.id;
-                        option.textContent = semester.name;
-                        semesterSelect.appendChild(option);
-                    });
-                } else if (data && typeof data === 'object') {
-                    // Handle case where response is an object with array property
-                    const semestersArray = data.data || data.semesters || Object.values(data);
-                    if (Array.isArray(semestersArray)) {
-                        semestersArray.forEach(semester => {
-                            const option = document.createElement('option');
-                            option.value = semester.id;
-                            option.textContent = semester.name;
-                            semesterSelect.appendChild(option);
-                        });
-                    }
-                }
+                const semesters = Array.isArray(data) ? data : 
+                                (data.data || data.semesters || Object.values(data));
+                
+                semesters.forEach(semester => {
+                    const option = new Option(semester.name, semester.id);
+                    semesterSelect.add(option);
+                });
             })
-            .catch(error => {
-                console.error('Error loading semesters:', error);
-            });
+            .catch(error => console.error('Error loading semesters:', error));
         });
     }
     
-    // Reject Modal Functionality
-    const rejectModal = document.getElementById('rejectModal');
-    const rejectForm = document.getElementById('rejectForm');
-    const rejectScheduleId = document.getElementById('rejectScheduleId');
-    const rejectStudentName = document.getElementById('rejectStudentName');
-    const rejectionReason = document.getElementById('rejectionReason');
-
-    document.querySelectorAll('.reject-btn').forEach(button => {
-        button.addEventListener('click', function () {
-            rejectScheduleId.value = this.dataset.scheduleId;
-            rejectStudentName.textContent = `Reject request for ${this.dataset.studentName}?`;
-            rejectForm.setAttribute('action', `/admin/schedules/${this.dataset.scheduleId}/reject`);
-            rejectModal.style.display = "flex";
-        });
-    });
-
-    document.getElementById('closeRejectModal').addEventListener('click', function () {
-        rejectModal.style.display = "none";
-        rejectionReason.value = "";
-    });
-    
-    // Complete Modal Functionality
-    const completeModal = document.getElementById('completeModal');
-    const completeForm = document.getElementById('completeForm');
-    const completeScheduleId = document.getElementById('completeScheduleId');
-    const completeStudentName = document.getElementById('completeStudentName');
-    
-    document.querySelectorAll('.complete-btn').forEach(button => {
-        button.addEventListener('click', function () {
-            completeScheduleId.value = this.dataset.scheduleId;
-            completeStudentName.textContent = `Mark request for ${this.dataset.studentName} as completed?`;
-            completeForm.setAttribute('action', `/admin/schedules/${this.dataset.scheduleId}/complete`);
-            completeModal.style.display = "flex"; // Changed from "none" to "flex" to correctly show the modal
-        });
-    });
-    
-    document.getElementById('closeCompleteModal').addEventListener('click', function () {
-        completeModal.style.display = "none";
-        document.getElementById('completionNotes').value = "";
-    });
-    
-    // Student link highlight effect
-    document.querySelectorAll('.student-link').forEach(link => {
-        link.addEventListener('mouseenter', function() {
-            this.classList.add('student-link-highlight');
-        });
+    // Modal Management System
+    const modalSystem = {
+        modals: {
+            reject: {
+                id: 'rejectModal',
+                openButtons: '.reject-btn',
+                closeButton: '#closeRejectModal',
+                form: '#rejectForm',
+                idField: '#rejectScheduleId',
+                nameField: '#rejectStudentName',
+                inputField: '#rejectionReason'
+            },
+            complete: {
+                id: 'completeModal',
+                openButtons: '.complete-btn',
+                closeButton: '#closeCompleteModal',
+                form: '#completeForm',
+                idField: '#completeScheduleId',
+                nameField: '#completeStudentName',
+                inputField: '#completionNotes'
+            }
+        },
         
-        link.addEventListener('mouseleave', function() {
-            this.classList.remove('student-link-highlight');
-        });
-    });
-});</script>
+        init: function() {
+            // Initialize all modals
+            Object.values(this.modals).forEach(modalConfig => {
+                const modal = document.getElementById(modalConfig.id);
+                
+                // Open modal handlers
+                document.querySelectorAll(modalConfig.openButtons).forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        document.querySelector(modalConfig.idField).value = btn.dataset.scheduleId;
+                        document.querySelector(modalConfig.nameField).textContent = 
+                            `${modalConfig.id === 'rejectModal' ? 'Reject' : 'Complete'} request for ${btn.dataset.studentName}?`;
+                        document.querySelector(modalConfig.form).action = 
+                            `/admin/schedules/${btn.dataset.scheduleId}/${modalConfig.id === 'rejectModal' ? 'reject' : 'complete'}`;
+                        this.showModal(modalConfig.id);
+                    });
+                });
+                
+                // Close modal handler
+                document.querySelector(modalConfig.closeButton).addEventListener('click', () => {
+                    this.hideModal(modalConfig.id);
+                });
+                
+                // Click outside to close
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        this.hideModal(modalConfig.id);
+                    }
+                });
+            });
+            
+            // Reject form validation
+            document.querySelector('#rejectForm').addEventListener('submit', function(e) {
+                const reason = document.querySelector('#rejectionReason').value.trim();
+                if (!reason) {
+                    e.preventDefault();
+                    alert("Please provide a reason for rejection.");
+                    document.querySelector('#rejectionReason').focus();
+                }
+            });
+            
+            // Setup student highlight effects
+            this.setupStudentHighlight();
+        },
+        
+        showModal: function(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.style.display = "flex";
+            // Trigger reflow for animation
+            void modal.offsetWidth;
+            modal.classList.add('active');
+        },
+        
+        hideModal: function(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.remove('active');
+            setTimeout(() => {
+                modal.style.display = "none";
+                // Clear inputs when hiding
+                const config = this.modals[modalId.split('Modal')[0].toLowerCase()];
+                if (config) {
+                    document.querySelector(config.inputField).value = '';
+                }
+            }, 300);
+        },
+        
+        setupStudentHighlight: function() {
+            document.querySelectorAll('.btn-success, .btn-danger, .btn-primary').forEach(button => {
+                button.addEventListener('mouseenter', function() {
+                    const row = this.closest('tr');
+                    if (row) {
+                        const studentLink = row.querySelector('.student-link');
+                        if (studentLink) {
+                            studentLink.classList.add('student-link-highlight');
+                        }
+                    }
+                });
+                
+                button.addEventListener('mouseleave', function() {
+                    const row = this.closest('tr');
+                    if (row) {
+                        const studentLink = row.querySelector('.student-link');
+                        if (studentLink) {
+                            studentLink.classList.remove('student-link-highlight');
+                        }
+                    }
+                });
+            });
+        }
+    };
+    
+    // Initialize the modal system
+    modalSystem.init();
+});
+</script>
 @endsection

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>{{ $title ?? 'PRMSU Document Request Portal San Marcellino' }}</title>
+    <title>{{ $title ?? 'PRMSU Document Request Portal San Marcelino' }}</title>
 
     @if (app()->environment('production'))
         @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -32,7 +32,7 @@
       </style>
 </head>
 
-<body class="bg-gray-100 text-gray-800 bg-cover bg-center md:bg-fixed m-0 flex flex-col min-h-screen overflow-x-hidden">
+<body class=" text-gray-800 bg-cover bg-center md:bg-fixed m-0 flex flex-col min-h-screen overflow-x-hidden">
     <x-nav/>
     @includeIf('components.messages')
     
