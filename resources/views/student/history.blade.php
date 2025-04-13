@@ -1,3 +1,4 @@
+{{-- resources\views\student\history.blade.php --}}
 @extends('layouts.default')
 
 @section('content')
@@ -20,46 +21,96 @@
                 </div>
             </div>
         </div>
-
-        <!-- Sorting Controls -->
-        <div class="bg-white rounded-xl shadow overflow-hidden mb-8">
-            <div class="p-6 border-b border-gray-200">
-                <h3 class="text-lg font-semibold text-gray-800">Sort By</h3>
-            </div>
-            <div x-data="{ activeSort: '{{ $sortBy ?? 'date' }}' }" class="p-6">
-                <!-- Desktop Sort Buttons -->
-                <div class="hidden sm:flex flex-wrap gap-3">
-                    <a href="{{ route('student.requests.sort', 'date') }}" 
-                       class="inline-flex items-center px-4 py-2 border rounded-lg text-sm font-medium transition duration-200"
-                       :class="activeSort == 'date' ? 'bg-blue-100 text-blue-700 border-blue-300' : 'text-gray-700 border-gray-300 hover:bg-gray-50'">
-                        Date (newest first)
-                    </a>
-                    <a href="{{ route('student.requests.sort', 'type') }}" 
-                       class="inline-flex items-center px-4 py-2 border rounded-lg text-sm font-medium transition duration-200"
-                       :class="activeSort == 'type' ? 'bg-blue-100 text-blue-700 border-blue-300' : 'text-gray-700 border-gray-300 hover:bg-gray-50'">
-                        Document Type
-                    </a>
-                    <a href="{{ route('student.requests.sort', 'status') }}" 
-                       class="inline-flex items-center px-4 py-2 border rounded-lg text-sm font-medium transition duration-200"
-                       :class="activeSort == 'status' ? 'bg-blue-100 text-blue-700 border-blue-300' : 'text-gray-700 border-gray-300 hover:bg-gray-50'">
-                        Status
-                    </a>
+        <div class="flex flex-col lg:flex-row gap-6 mb-8">
+            <!-- Filter Section -->
+            <div class="w-full lg:w-1/2 bg-white rounded-xl shadow overflow-hidden">
+                <div class="p-6 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-800">Filter Requests</h3>
                 </div>
-                
-                <!-- Mobile Dropdown -->
-                <div class="sm:hidden">
-                    <select 
-                        x-model="activeSort"
-                        @change="window.location.href = '{{ route('student.requests.sort', '') }}/' + $event.target.value"
-                        class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg transition duration-200">
-                        <option value="date">Date (newest first)</option>
-                        <option value="type">Document Type</option>
-                        <option value="status">Status</option>
-                    </select>
+                <div class="p-6">
+                    <form method="GET" action="{{ route('student.history') }}">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Status Filter -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                                <select name="status" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg">
+                                    <option value="all" {{ $currentStatus == 'all' ? 'selected' : '' }}>All Statuses</option>
+                                    <option value="pending" {{ $currentStatus == 'pending' ? 'selected' : '' }}>Pending</option>
+                                    <option value="approved" {{ $currentStatus == 'approved' ? 'selected' : '' }}>Approved</option>
+                                    <option value="completed" {{ $currentStatus == 'completed' ? 'selected' : '' }}>Completed</option>
+                                    <option value="Pending Compliance" {{ $currentStatus == 'Pending Compliance' ? 'selected' : '' }}>Pending Compliance</option>
+                                </select>
+                            </div>
+        
+                            <!-- Document Type Filter -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Document Type</label>
+                                <select name="document_type" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg">
+                                    <option value="all" {{ $currentDocumentType == 'all' ? 'selected' : '' }}>All Documents</option>
+                                    @foreach($documentTypes as $type)
+                                        <option value="{{ $type }}" {{ $currentDocumentType == $type ? 'selected' : '' }}>{{ $type }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+        
+                        <!-- Action Buttons -->
+                        <div class="mt-4 flex space-x-2">
+                            <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                Apply Filters
+                            </button>
+                            <a href="{{ route('student.history') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                Reset
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        
+            <!-- Sorting Section -->
+            <div class="w-full lg:w-1/2 bg-white rounded-xl shadow overflow-hidden">
+                <div class="p-6 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-800">Sort By</h3>
+                </div>
+                <div class="p-6">
+                    <form method="GET" action="{{ route('student.history') }}">
+                        <!-- Hidden fields to preserve filters -->
+                        @if(request('status'))
+                            <input type="hidden" name="status" value="{{ request('status') }}">
+                        @endif
+                        @if(request('document_type'))
+                            <input type="hidden" name="document_type" value="{{ request('document_type') }}">
+                        @endif
+        
+                        <div class="flex flex-wrap gap-4">
+                            <!-- Sort Field Selection -->
+                            <div class="flex-1 min-w-[150px]">
+                                <select name="sort" 
+                                        onchange="this.form.submit()"
+                                        class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg">
+                                    <option value="preferred_date" {{ request('sort') == 'preferred_date' ? 'selected' : '' }}>Date</option>
+                                    <option value="file_name" {{ request('sort') == 'file_name' ? 'selected' : '' }}>Document Type</option>
+                                    <option value="status" {{ request('sort') == 'status' ? 'selected' : '' }}>Status</option>
+                                </select>
+                            </div>
+        
+                            <!-- Direction Toggle -->
+                            <div class="flex items-center">
+                                <input type="hidden" name="direction" value="{{ request('direction') == 'asc' ? 'desc' : 'asc' }}">
+                                <button type="submit" 
+                                        class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                    <span>{{ request('direction') == 'asc' ? 'Ascending' : 'Descending' }}</span>
+                                    <svg class="ml-1 h-4 w-4 transform {{ request('direction') == 'asc' ? 'rotate-180' : '' }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-
+        
         <!-- History List -->
         <div class="bg-white rounded-xl shadow overflow-hidden">
             <div class="p-6 border-b border-gray-200">
@@ -124,47 +175,31 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         @switch($schedule->status)
-                                            @case('pending')
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-amber-100 text-amber-800">
-                                                    Pending
-                                                </span>
-                                                @break
-                                            @case('approved')
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                    Approved
-                                                </span>
-                                                @break
-                                            @case('rejected')
-                                                @if($schedule->followupRequest)
-                                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-indigo-100 text-indigo-800">
-                                                        Compliance Addressed
-                                                    </span>
-                                                @else
-                                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                                                        Pending Compliance
-                                                    </span>
-                                                @endif
-                                                @break
-                                            @case('cancelled')
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                                                    Cancelled
-                                                </span>
-                                                @break
-                                            @case('completed')
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                                                    Completed
-                                                </span>
-                                                @break
-                                            @case('compliance_addressed')
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-indigo-100 text-indigo-800">
-                                                    Compliance Addressed
-                                                </span>
-                                                @break
-                                            @default
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                                                    {{ $schedule->status }}
-                                                </span>
-                                        @endswitch
+                                        @case('pending')
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-amber-100 text-amber-800">
+                                                Pending
+                                            </span>
+                                            @break
+                                        @case('approved')
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                Approved
+                                            </span>
+                                            @break
+                                        @case('rejected')
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                                Rejected
+                                            </span>
+                                            @break
+                                        @case('completed')
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                                Completed
+                                            </span>
+                                            @break
+                                        @default
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                                                {{ $schedule->status }}
+                                            </span>
+                                    @endswitch
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                         @if($schedule->status == 'pending')
