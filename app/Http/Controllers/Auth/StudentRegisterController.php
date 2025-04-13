@@ -19,13 +19,21 @@ class StudentRegisterController extends Controller
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'student_id' => ['required', 'regex:/^\d{2}-\d{6}$/', 'unique:students,student_id'],
-            'first_name' => ['required', 'string', 'max:255', 'regex:/^[A-Za-z]+$/'],
-            'last_name' => ['required', 'string', 'max:255', 'regex:/^[A-Za-z]+$/'],
+            'student_id' => ['required', 'regex:/^\d{2}-\d{1,6}$/', 'unique:students,student_id'],
+            'first_name' => ['required', 'string', 'min:2', 'max:255', 'regex:/^[A-Za-z\s]+$/'],
+            'last_name' => ['required', 'string', 'min:2', 'max:255', 'regex:/^[A-Za-z]+$/'],
             'email' => ['required', 'email', 'unique:students,email'],
-            'course' => ['required', 'string'],
-            'contact_number' => ['required', 'digits:11', 'numeric'],
-            'password' => ['required', 'min:6', 'confirmed'],
+            'course' => ['required', 'string', 'in:BAT,BSA,BEED,BSED,BSCS,BSHM'],
+            'contact_number' => ['required', 'digits:11', 'numeric', 'regex:/^09\d{9}$/'],
+            'password' => ['required', 'min:8', 'confirmed'],
+            'terms' => ['required', 'accepted'],
+        ], [
+            'student_id.regex' => 'The student ID must be in the format XX-XXXXXX (2 digits, hyphen, then 1-6 digits).',
+            'first_name.regex' => 'First name may only contain letters and spaces.',
+            'last_name.regex' => 'Last name may only contain letters.',
+            'contact_number.regex' => 'Contact number must start with 09 and be 11 digits total.',
+            'terms.required' => 'You must accept the terms and conditions.',
+            'course.in' => 'Please select a valid course.',
         ]);
 
         if ($validator->fails()) {
@@ -45,6 +53,6 @@ class StudentRegisterController extends Controller
         // Send verification email
         $student->sendEmailVerificationNotification();
 
-        return redirect('/login')->with('message', 'Registration successful! Please check your email to verify your account.');    
+        return redirect('/login')->with('message', 'Registration successful! Please check your email to verify your account.');
     }
 }

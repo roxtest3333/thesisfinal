@@ -11,8 +11,8 @@
                 <div class="flex justify-center relative z-10">
                     <img src="{{ asset('images/prmsu-logo-big.png') }}" alt="PRMSU Logo" class="h-16 w-16 rounded-full border-4 border-white shadow-lg">
                 </div>
-                <h2 class="mt-4 text-2xl font-extrabold text-white relative z-10">Welcome Back</h2>
-                <p class="text-blue-200 text-sm relative z-10">Sign in to access your account</p>
+
+                <p class="text-blue-200 text-sm mt-4 relative z-10">Sign in to access your account</p>
             </div>
             
             <!-- Card Body -->
@@ -40,7 +40,7 @@
                 @endif
 
                 <!-- Login Form -->
-                <form method="POST" action="{{ route('login') }}" class="space-y-3">
+                <form method="POST" action="{{ route('login') }}" class="space-y-2">
                     @csrf
                     <!-- Email Field -->
                     <div class="space-y-1">
@@ -122,10 +122,12 @@
                     </div>
                 </form>
 
-                <!-- Register Link -->
                 <div class="mt-4 text-center border-t border-gray-200 pt-6">
-                    <p class="text-sm text-gray-600">Don't have an account?</p>
-                    <a href="{{ route('register') }}" class="mt-2 inline-block font-medium text-blue-600 hover:text-blue-800 transition duration-200 hover:underline">
+                    <a href="{{ route('register') }}" 
+                       class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transform transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                        <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                            
+                        </span>
                         Create Account
                     </a>
                 </div>

@@ -15,7 +15,9 @@ class ScheduleController extends Controller
     public function index(Request $request)
     {
         $query = Schedule::with(['student', 'file', 'schoolYear', 'semester']);
-    
+        
+        //shows only records created in last 30 days
+        $query->where('created_at', '>', now()->subDays(30)); 
         // Fetch dropdown options
         $files = File::all();
         $schoolYears = SchoolYear::all();

@@ -52,8 +52,8 @@
                                         </svg>
                                     </div>
                                     <input type="text" name="student_id" value="{{ old('student_id') }}" 
-                                        class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
-                                        placeholder="XX-XXXXXX" maxlength="9">
+    class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+    placeholder="XX-XXXXXX" maxlength="9">
                                 </div>
                                 @error('student_id')
                                     <p class="text-red-500 text-sm mt-1 flex items-center">
@@ -75,8 +75,8 @@
                                         </svg> 
                                     </div>
                                     <input type="text" name="first_name" value="{{ old('first_name') }}" 
-                                        class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
-                                        required>
+    class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+    required minlength="2" pattern="[a-zA-Z\s]+">
                                 </div>
                                 @error('first_name')
                                     <p class="text-red-500 text-sm mt-1 flex items-center">
@@ -98,8 +98,8 @@
                                         </svg>
                                     </div>
                                     <input type="text" name="last_name" value="{{ old('last_name') }}" 
-                                        class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
-                                        required>
+    class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+    required minlength="2">
                                 </div>
                                 @error('last_name')
                                     <p class="text-red-500 text-sm mt-1 flex items-center">
@@ -190,8 +190,9 @@
                                         </svg>
                                     </div>
                                     <input type="text" name="contact_number" value="{{ old('contact_number') }}" 
-                                        class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
-                                        required maxlength="11" placeholder="09XXXXXXXXX">
+    class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+    required maxlength="11" minlength="11" pattern="09[0-9]{9}" 
+    placeholder="09XXXXXXXXX" inputmode="numeric">
                                 </div>
                                 <p class="text-xs text-gray-500 mt-1">Format: 11 digits (e.g., 09123456789)</p>
                                 @error('contact_number')
@@ -284,20 +285,20 @@
                     </div>
 
                     <!-- Terms and Conditions -->
-                    <div class="flex items-center">
-                        <input type="checkbox" id="terms" name="terms" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                        <label for="terms" class="ml-2 block text-sm text-gray-700">
-                            I agree to the <a href="#" class="text-blue-600 hover:text-blue-800">Terms and Conditions</a> and <a href="#" class="text-blue-600 hover:text-blue-800">Privacy Policy</a>
-                        </label>
-                    </div>
+                    <div class="flex justify-center">
+    <div class="flex items-center max-w-xs">
+        <input type="checkbox" id="terms" name="terms" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+        <label for="terms" class="ml-2 block text-sm text-gray-700">
+            I agree to the <a href="#" class="text-blue-600 hover:text-blue-800">Terms</a> and <a href="#" class="text-blue-600 hover:text-blue-800">Privacy Policy</a>
+        </label>
+    </div>
+</div>
 
                     <!-- Submit Button -->
-                    <div>
-                        <button type="submit" class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transform transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                    <div class="flex justify-center">
+                        <button type="submit" class="group relative w-full max-w-xs flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transform transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
                             <span class="absolute left-0 inset-y-0 flex items-center pl-3">
-                                <svg class="h-5 w-5 text-blue-200 group-hover:text-blue-100" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                                </svg>
+                                
                             </span>
                             Create Account
                         </button>
@@ -351,30 +352,106 @@
         }
     }
 
-    // Student ID formatting
+    // Student ID formatting - allows partial input
     document.addEventListener("DOMContentLoaded", function () {
         const studentIdInput = document.querySelector('input[name="student_id"]');
-        studentIdInput.addEventListener("input", function() {
-            // Remove all non-digits and existing hyphens
-            let value = this.value.replace(/[^\d-]/g, ""); 
+        if (studentIdInput) {
+            studentIdInput.addEventListener("input", function() {
+                // Remove all non-digits and existing hyphens
+                let value = this.value.replace(/[^\d-]/g, ""); 
+                
+                // Auto-insert hyphen after 2 digits if not already present
+                if (value.length > 2 && !value.includes("-")) {
+                    this.value = value.slice(0, 2) + "-" + value.slice(2);
+                }
+                
+                // Prevent multiple hyphens
+                if ((value.match(/-/g) || []).length > 1) {
+                    this.value = value.slice(0, value.lastIndexOf("-")) + 
+                                value.slice(value.lastIndexOf("-") + 1);
+                }
+            });
+        }
+
+        // Contact number validation - only allow numbers and enforce 09 prefix
+        const contactInput = document.querySelector('input[name="contact_number"]');
+        if (contactInput) {
+            contactInput.addEventListener("input", function() {
+                // Remove all non-numeric characters
+                this.value = this.value.replace(/[^0-9]/g, '');
+                
+                // Ensure it starts with 09 and doesn't exceed 11 digits
+                if (this.value.length > 11) {
+                    this.value = this.value.slice(0, 11);
+                }
+                
+                // If user tries to change the first two digits from 09, reset to 09
+                if (this.value.length >= 2 && !this.value.startsWith("09")) {
+                    this.value = "09" + this.value.slice(2);
+                }
+            });
             
-            // If user tries to type beyond format, stop them
-            if (value.replace(/-/g, "").length > 9) {
-                this.value = value.slice(0, 12); // 11 because of hyphen positions
-                return;
-            }
-            
-            // Auto-insert hyphen after 2 digits
-            if (value.length > 2 && !value.includes("-")) {
-                this.value = value.slice(0, 2) + "-" + value.slice(2);
-            }
-            
-            // Prevent multiple hyphens
-            if ((value.match(/-/g) || []).length > 1) {
-                this.value = value.slice(0, value.lastIndexOf("-")) + 
-                            value.slice(value.lastIndexOf("-") + 1);
+            // Validate on blur to ensure complete number
+            contactInput.addEventListener("blur", function() {
+                if (this.value.length < 11) {
+                    // You might want to show an error message here
+                    console.log("Phone number must be 11 digits starting with 09");
+                }
+            });
+        }
+
+        // Name validation - ensure minimum length
+        const firstNameInput = document.querySelector('input[name="first_name"]');
+        const lastNameInput = document.querySelector('input[name="last_name"]');
+        
+        [firstNameInput, lastNameInput].forEach(input => {
+            if (input) {
+                input.addEventListener("blur", function() {
+                    if (this.value.length < 2) {
+                        // You might want to show an error message here
+                        console.log("Name must be at least 2 characters long");
+                    }
+                });
             }
         });
     });
+
+    // Form submission validation
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener("submit", function(e) {
+            // Validate contact number
+            const contactInput = document.querySelector('input[name="contact_number"]');
+            if (contactInput && (contactInput.value.length !== 11 || !contactInput.value.startsWith("09"))) {
+                alert("Please enter a valid 11-digit phone number starting with 09");
+                e.preventDefault();
+                return;
+            }
+            
+            // Validate names
+            const firstNameInput = document.querySelector('input[name="first_name"]');
+            const lastNameInput = document.querySelector('input[name="last_name"]');
+            
+            if (firstNameInput && firstNameInput.value.length < 2) {
+                alert("First name must be at least 2 characters long");
+                e.preventDefault();
+                return;
+            }
+            
+            if (lastNameInput && lastNameInput.value.length < 2) {
+                alert("Last name must be at least 2 characters long");
+                e.preventDefault();
+                return;
+            }
+            
+            // Validate terms checkbox
+            const termsCheckbox = document.getElementById('terms');
+            if (termsCheckbox && !termsCheckbox.checked) {
+                alert("You must agree to the terms and conditions");
+                e.preventDefault();
+                return;
+            }
+        });
+    }
 </script>
 @endsection

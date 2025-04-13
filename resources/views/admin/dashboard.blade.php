@@ -137,7 +137,7 @@
                     <a href="{{ route('admin.schedules.index', [
                         'start_date' => $currentDate->format('Y-m-d'),
                         'end_date' => $currentDate->format('Y-m-d'),
-                        'status' => 'approved,completed'
+                        'status' => 'approved'
                     ]) }}" 
                        class="absolute inset-0 z-10" title="View appointments for this day">
                     </a>
