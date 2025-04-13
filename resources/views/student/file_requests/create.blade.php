@@ -1,9 +1,10 @@
+{{-- resources\views\student\file_requests\create.blade.php --}}
 @extends('layouts.student_create')
 
 @section('title', 'Request Files')
 
 @section('content')
-<div class="container py-4">
+<div class="container py-6">
     <div class="row mb-4">
         <div class="col-md-12">
             <div class="card shadow">

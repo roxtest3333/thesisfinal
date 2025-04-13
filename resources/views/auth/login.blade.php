@@ -5,7 +5,7 @@
     <div class="w-full max-w-md">
         <div class="bg-white rounded-xl shadow-2xl overflow-hidden transform transition duration-500 hover:scale-105">
             <!-- Card Header with Logo -->
-            <div class="bg-gray-800 p-6 text-center relative overflow-hidden">
+            <div class="bg-gradient-to-r from-blue-600 to-blue-800 p-6 text-center relative overflow-hidden">
                 
                 
                 <div class="flex justify-center relative z-10">

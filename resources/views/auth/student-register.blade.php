@@ -5,7 +5,7 @@
     <div class="w-full max-w-4xl">
         <div class="bg-white rounded-xl shadow-2xl overflow-hidden transform transition duration-500 hover:scale-[1.01]">
             <!-- Card Header with Logo -->
-            <div class="bg-gray-800 p-6 text-center relative overflow-hidden">
+            <div class="bg-gradient-to-r from-blue-600 to-blue-800 p-6 text-center relative overflow-hidden">
                 <div class="flex justify-center relative z-10">
                     <img src="{{ asset('images/prmsu-logo-big.png') }}" alt="PRMSU Logo" class="h-16 w-16 rounded-full border-4 border-white shadow-lg">
                 </div>

@@ -82,7 +82,12 @@ public function studentHistory(Request $request)
     
     // Status filter - simplified
     if ($request->filled('status') && $request->status != 'all') {
-        $query->where('status', $request->status);
+        if ($request->status == 'Pending Compliance') {
+            $query->where('status', 'rejected')
+                  ->whereDoesntHave('followupRequest');
+        } else {
+            $query->where('status', $request->status);
+        }
     }
     
     // Document type filter

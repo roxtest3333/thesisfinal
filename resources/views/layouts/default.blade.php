@@ -38,7 +38,8 @@
     
     <!-- Main Content Section -->
     <main class="flex-grow mx-auto p-4 sm:p-6 @yield('main-class') mt-20 w-full max-w-screen-2xl">
-        @yield('content')
+        <div class="max-w-screen-xl mx-auto">
+            @yield('content')
     </main> 
 
     <!-- Footer -->
