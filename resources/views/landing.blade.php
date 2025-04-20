@@ -100,7 +100,7 @@
                             <svg class="w-5 h-5 text-indigo-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                             </svg>
-                            <span>Submit with required attachments</span>
+                            <span>Review Summary before submitting</span>
                         </li>
                     </ul>
                 </div>
@@ -251,7 +251,7 @@
             <p class="text-lg text-gray-700 mb-6 max-w-2xl mx-auto">Create an account or log in to begin requesting your official documents online.</p>
             <div class="flex justify-center gap-5 flex-wrap">
                 <a href="{{ route('login') }}" class="bg-indigo-600 text-white px-8 py-3 rounded-lg hover:bg-indigo-700 transition duration-300 font-medium shadow-md">Login</a>
-                <a href="{{ route('register') }}" class="bg-white border-2 border-indigo-600 text-indigo-600 px-8 py-3 rounded-lg hover:bg-indigo-50 transition duration-300 font-medium shadow-sm">Register</a>
+                <a href="{{ route('register') }}"  class="bg-white border-2 border-indigo-600 text-indigo-600 px-8 py-3 rounded-lg hover:bg-indigo-50 transition duration-300 font-medium shadow-sm">Register</a>
             </div>
         </section>
     </div>

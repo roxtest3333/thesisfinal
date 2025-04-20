@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Exception;
-
+use Barryvdh\Snappy\Facades\SnappyPdf as PDF;
 class FileRequestsController extends Controller
 {
     // Certificate categories - define which files are certificates
@@ -364,4 +364,49 @@ public function store(Request $request)
         }
         return $date;
     }
+
+    public function generatePDF(Request $request)
+    {
+        $student = Auth::guard('student')->user();
+        
+        // Prepare request data for PDF
+        $requestData = [
+            'documents' => [],
+            'preferred_date' => $request->preferred_date,
+            'preferred_time' => $request->preferred_time,
+            // Add other fields as needed
+        ];
+    
+        // Process selected files
+        foreach ($request->files ?? [] as $fileId => $fileData) {
+            if (isset($fileData['selected'])) {
+                $file = File::find($fileId);
+                if ($file) {
+                    $requestData['documents'][] = [
+                        'type' => $file->file_name,
+                        'copies' => $fileData['copies'] ?? 1,
+                        'purpose' => $fileData['reason'] ?? '',
+                        'requirements' => $fileData['requirements'] ?? []
+                    ];
+                }
+            }
+        }
+    
+        $pdf = PDF::loadView('pdf.request-form', [
+            'student' => $student,
+            'requestData' => $requestData
+        ]);
+    
+        return $pdf->inline('PRMSU_Document_Request_'.date('Ymd').'.pdf');
+    }
+    public function downloadBlankForm()
+{
+    $pathToFile = public_path('docs/request_form.pdf');
+    
+    if (!file_exists($pathToFile)) {
+        return back()->with('error', 'Request form not found. Please contact the administrator.');
+    }
+    
+    return response()->download($pathToFile, 'PRMSU_Document_Request_Form.pdf');
+}
 }

@@ -87,7 +87,31 @@
                                     </p>
                                 @enderror
                             </div>
-
+                            
+                            <!-- Middle Name -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Middle Name</label>
+                                <div class="relative rounded-md shadow-sm">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                    <input type="text" name="middle_name" value="{{ old('middle_name') }}" 
+                                        class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+                                        pattern="[a-zA-Z\s]+">
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1">Complete Middle Name not initial</p>
+                                @error('middle_name')
+                                    <p class="text-red-500 text-sm mt-1 flex items-center">
+                                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"></path>
+                                        </svg>
+                                        {{ $message }}
+                                    </p>
+                                @enderror
+                            </div>
+                            
                             <!-- Last Name -->
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
@@ -102,6 +126,51 @@
     required minlength="2">
                                 </div>
                                 @error('last_name')
+                                    <p class="text-red-500 text-sm mt-1 flex items-center">
+                                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"></path>
+                                        </svg>
+                                        {{ $message }}
+                                    </p>
+                                @enderror
+                            </div>
+                            <!-- Birthday -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Birthday</label>
+                                <div class="relative rounded-md shadow-sm">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                    <input type="date" name="birthday" value="{{ old('birthday') }}" 
+                                        class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+                                        max="{{ date('Y-m-d', strtotime('-15 years')) }}" required>
+                                </div>
+                                
+                                @error('birthday')
+                                    <p class="text-red-500 text-sm mt-1 flex items-center">
+                                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"></path>
+                                        </svg>
+                                        {{ $message }}
+                                    </p>
+                                @enderror
+                            </div>
+                            <!-- Birthplace -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Birthplace</label>
+                                <div class="relative rounded-md shadow-sm">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                    <input type="text" name="birthplace" value="{{ old('birthplace') }}" 
+                                        class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+                                        required>
+                                </div>
+                                @error('birthplace')
                                     <p class="text-red-500 text-sm mt-1 flex items-center">
                                         <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                             <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"></path>
@@ -190,12 +259,64 @@
                                         </svg>
                                     </div>
                                     <input type="text" name="contact_number" value="{{ old('contact_number') }}" 
-    class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
-    required maxlength="11" minlength="11" pattern="09[0-9]{9}" 
-    placeholder="09XXXXXXXXX" inputmode="numeric">
+                                        class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+                                        required maxlength="11" minlength="11" pattern="09[0-9]{9}" 
+                                        placeholder="09XXXXXXXXX" inputmode="numeric">
                                 </div>
                                 <p class="text-xs text-gray-500 mt-1">Format: 11 digits (e.g., 09123456789)</p>
                                 @error('contact_number')
+                                    <p class="text-red-500 text-sm mt-1 flex items-center">
+                                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"></path>
+                                        </svg>
+                                        {{ $message }}
+                                    </p>
+                                @enderror
+                            </div>
+
+                            <!-- Sex/Gender -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Sex</label>
+                                <div class="relative rounded-md shadow-sm">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                    <select name="sex" class="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 appearance-none" required>
+                                        <option value="">Select Sex</option>
+                                        <option value="Male" {{ old('sex') == 'Male' ? 'selected' : '' }}>Male</option>
+                                        <option value="Female" {{ old('sex') == 'Female' ? 'selected' : '' }}>Female</option>
+                                    </select>
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                                @error('sex')
+                                    <p class="text-red-500 text-sm mt-1 flex items-center">
+                                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"></path>
+                                        </svg>
+                                        {{ $message }}
+                                    </p>
+                                @enderror
+                            </div>
+                            <!-- Home Address -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Home Address</label>
+                                <div class="relative rounded-md shadow-sm">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                            <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                                        </svg>
+                                    </div>
+                                    <textarea name="home_address" rows="2"
+                                        class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+                                        required>{{ old('home_address') }}</textarea>
+                                </div>
+                                @error('home_address')
                                     <p class="text-red-500 text-sm mt-1 flex items-center">
                                         <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                             <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"></path>
@@ -239,7 +360,8 @@
                 </button>
             </div>
         </div>
-        <p class="text-xs text-gray-500 mt-1">Must be at least 8 characters</p>
+        
+
         @error('password')
             <p class="text-red-500 text-sm mt-1 flex items-center">
                 <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
@@ -284,12 +406,13 @@
 </div>
                     </div>
 
-                    <!-- Terms and Conditions -->
-                    <div class="flex justify-center">
-    <div class="flex items-center max-w-xs">
-        <input type="checkbox" id="terms" name="terms" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-        <label for="terms" class="ml-2 block text-sm text-gray-700">
-            I agree to the <a href="#" class="text-blue-600 hover:text-blue-800">Terms</a> and <a href="#" class="text-blue-600 hover:text-blue-800">Privacy Policy</a>
+                    <!-- Assurance Checkbox -->
+<div class="flex justify-center">
+    <div class="flex items-center ">
+        <input type="checkbox" id="data-assurance" name="terms" 
+               class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" required>
+        <label for="data-assurance" class="ml-2 block text-sm text-gray-700">
+            I certify that all information provided is true, complete, and accurate to the best of my knowledge.
         </label>
     </div>
 </div>

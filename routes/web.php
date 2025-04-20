@@ -128,7 +128,8 @@ Route::middleware(['auth:student'])->prefix('student')->group(function () {
         Route::post('/file-requests', [FileRequestsController::class, 'store'])->name('student.file_requests.store');
         Route::delete('/file-requests/{id}/cancel', [FileRequestsController::class, 'cancelRequest'])->name('file-requests.cancel');
         Route::get('/file-requirements/{id}', [FileRequestsController::class, 'getRequirements'])->name('student.file-requirements.get');
-    
+        Route::post('/file-requests/generate-pdf', [FileRequestsController::class, 'generatePDF'])->name('student.file_requests.generate_pdf');
+        Route::get('/file-requests/download-form', [FileRequestsController::class, 'downloadBlankForm'])->name('student.file_requests.download_form');
     // Dashboard
         Route::get('/dashboard', [StudentDashboardController::class, 'index'])->name('student.dashboard');
     // Request History

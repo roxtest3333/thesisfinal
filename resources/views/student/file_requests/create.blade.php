@@ -10,6 +10,7 @@
             <div class="card shadow">
                 <div class="card-header bg-primary text-white">
                     <h4 class="mb-0">Request Documents</h4>
+                    
                 </div>
                 <div class="card-body">
                     <!-- Reference Request Notification -->
@@ -47,12 +48,20 @@
                     <form id="fileRequestForm" action="{{ route('student.file_requests.store') }}" method="POST">
                         @csrf
                         @if(isset($referenceRequest))
-        <input type="hidden" name="reference_id" value="{{ $referenceRequest->id }}">
-    @endif
+                            <input type="hidden" name="reference_id" value="{{ $referenceRequest->id }}">
+                        @endif
                         <!-- Step 1: Select Documents -->
                         <div class="step-container" id="step1">
                             <div class="row mb-4">
                                 <div class="col-md-12">
+                                    <div class="alert alert-info mb-4">
+                                        <strong>Step 1: Download & Sign the Request Form</strong>
+                                        <p>Before proceeding, download the official request form, fill in the required details, and sign it. You will need to submit this when claiming your documents.</p>
+                                        <a href="{{ route('student.file_requests.download_form') }}" 
+                                           class="btn btn-primary mt-2">
+                                           <i class="fas fa-download"></i> Download Request Form
+                                        </a>
+                                    </div>
                                     <h5>Regular Documents</h5>
                                     <hr>
                                 </div>
@@ -263,6 +272,12 @@
                                 <button type="button" class="btn btn-secondary btn-lg prev-step">
                                     Back: Schedule Pickup
                                 </button>
+                                {{-- <button type="button" class="btn btn-primary btn-lg" id="viewPdfButton">
+                                    View PDF Form
+                                </button>
+                                <button type="button" class="btn btn-secondary btn-lg" id="savePdfButton">
+                                    Save as PDF
+                                </button> --}}
                                 <button type="submit" class="btn btn-success btn-lg" id="submitButton" disabled>
                                     Submit Request
                                 </button>
@@ -829,8 +844,65 @@ $(document).ready(function() {
             $(this).val('');
         }
     });
+       // View PDF Button Handler
+/* $('#viewPdfButton').on('click', function() {
+    // Serialize the form data
+    const formData = new FormData(document.getElementById('fileRequestForm'));
     
-    // Enable/disable submit button based on terms agreement
+    // Create a hidden form for PDF generation
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = "{{ route('student.file_requests.generate_pdf') }}";
+    form.target = '_blank'; // Open in new tab
+    form.style.display = 'none';
+    
+    // Add CSRF token
+    const csrfToken = document.createElement('input');
+    csrfToken.type = 'hidden';
+    csrfToken.name = '_token';
+    csrfToken.value = "{{ csrf_token() }}";
+    form.appendChild(csrfToken);
+    
+    // Add all form data
+    for (const [key, value] of formData.entries()) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = value;
+        form.appendChild(input);
+    }
+    
+    document.body.appendChild(form);
+    form.submit();
+    document.body.removeChild(form);
+});
+
+// Save PDF Button Handler
+$('#savePdfButton').on('click', function() {
+    // Submit via AJAX to force download
+    const formData = new FormData(document.getElementById('fileRequestForm'));
+    
+    fetch("{{ route('student.file_requests.generate_pdf') }}", {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRF-TOKEN': "{{ csrf_token() }}"
+        }
+    })
+    .then(response => response.blob())
+    .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `PRMSU_Document_Request_${new Date().toISOString().slice(0,10)}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+    });
+});
+ */    
+// Enable/disable submit button based on terms agreement
     $('#agreeTerms').on('change', function() {
         $('#submitButton').prop('disabled', !$(this).is(':checked'));
     });
@@ -840,4 +912,5 @@ $(document).ready(function() {
 });
 </script>
 @endpush
+
 

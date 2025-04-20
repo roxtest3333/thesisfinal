@@ -1,3 +1,5 @@
+{{-- resources\views\student\profile\edit.blade.php --}}
+
 @extends('layouts.default')
 
 @section('content')
@@ -22,7 +24,7 @@
                 <!-- Personal Information Section -->
                 <div>
                     <h3 class="text-lg font-semibold text-gray-700 mb-3 pb-2 border-b border-gray-200">Personal Information</h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div>
                             <label class="flex items-center text-sm font-medium text-gray-700 mb-1">
                                 <svg class="w-4 h-4 mr-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -41,10 +43,69 @@
                                 <svg class="w-4 h-4 mr-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                                 </svg>
+                                Middle Name
+                            </label>
+                            <input type="text" name="middle_name" class="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500" value="{{ old('middle_name', $student->middle_name ?? '') }}">
+                            @error('middle_name')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label class="flex items-center text-sm font-medium text-gray-700 mb-1">
+                                <svg class="w-4 h-4 mr-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                </svg>
                                 Last Name
                             </label>
                             <input type="text" name="last_name" class="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500" value="{{ old('last_name', $student->last_name) }}" required>
                             @error('last_name')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
+                        <div>
+                            <label class="flex items-center text-sm font-medium text-gray-700 mb-1">
+                                <svg class="w-4 h-4 mr-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                </svg>
+                                Sex
+                            </label>
+                            <select name="sex" class="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500" required>
+                                <option value="">Select Gender</option>
+                                <option value="Male" {{ old('sex', $student->sex ?? '') == 'Male' ? 'selected' : '' }}>Male</option>
+                                <option value="Female" {{ old('sex', $student->sex ?? '') == 'Female' ? 'selected' : '' }}>Female</option>
+                            </select>
+                            @error('sex')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label class="flex items-center text-sm font-medium text-gray-700 mb-1">
+                                <svg class="w-4 h-4 mr-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                Birthday
+                            </label>
+                            <input type="date" name="birthday" class="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500" value="{{ old('birthday', $student->birthday ? $student->birthday->format('Y-m-d') : '') }}" required>
+                            @error('birthday')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label class="flex items-center text-sm font-medium text-gray-700 mb-1">
+                                <svg class="w-4 h-4 mr-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                </svg>
+                                Birthplace
+                            </label>
+                            <input type="text" name="birthplace" class="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500" value="{{ old('birthplace', $student->birthplace ?? '') }}" required>
+                            @error('birthplace')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
                         </div>
@@ -68,6 +129,19 @@
                             @enderror
                         </div>
 
+                        <div>
+                            <label class="flex items-center text-sm font-medium text-gray-700 mb-1">
+                                <svg class="w-4 h-4 mr-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                                </svg>
+                                Home Address
+                            </label>
+                            <textarea name="home_address" class="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500" rows="3" required>{{ old('home_address', $student->home_address ?? '') }}</textarea>
+                            @error('home_address')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label class="flex items-center text-sm font-medium text-gray-700 mb-1">
@@ -76,7 +150,15 @@
                                     </svg>
                                     Course
                                 </label>
-                                <input type="text" name="course" class="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500" value="{{ old('course', $student->course) }}" required>
+                                <select name="course" class="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500" required>
+                                    <option value="">Select Course</option>
+                                    <option value="BAT" {{ old('course', $student->course) == 'BAT' ? 'selected' : '' }}>Bachelor of Arts in Tourism</option>
+                                    <option value="BSA" {{ old('course', $student->course) == 'BSA' ? 'selected' : '' }}>Bachelor of Science in Accountancy</option>
+                                    <option value="BEED" {{ old('course', $student->course) == 'BEED' ? 'selected' : '' }}>Bachelor in Elementary Education</option>
+                                    <option value="BSED" {{ old('course', $student->course) == 'BSED' ? 'selected' : '' }}>Bachelor in Secondary Education</option>
+                                    <option value="BSCS" {{ old('course', $student->course) == 'BSCS' ? 'selected' : '' }}>Bachelor of Science in Computer Science</option>
+                                    <option value="BSHM" {{ old('course', $student->course) == 'BSHM' ? 'selected' : '' }}>Bachelor of Science in Hospitality Management</option>
+                                </select>
                                 @error('course')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
@@ -89,7 +171,7 @@
                                     </svg>
                                     Contact Number
                                 </label>
-                                <input type="text" name="contact_number" class="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500" value="{{ old('contact_number', $student->contact_number) }}" required>
+                                <input type="text" name="contact_number" class="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500" value="{{ old('contact_number', $student->contact_number) }}" placeholder="09XXXXXXXXX" required>
                                 @error('contact_number')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
@@ -110,6 +192,7 @@
                                 New Password <span class="text-xs text-gray-500 ml-1">(Optional)</span>
                             </label>
                             <input type="password" name="password" class="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                            <p class="text-xs text-gray-500 mt-1">Must be at least 8 characters</p>
                             @error('password')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror

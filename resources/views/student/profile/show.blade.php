@@ -12,8 +12,9 @@
                     </div>
                 </div>
                 <div>
-                    <h2 class="text-2xl font-bold text-white">{{ $student->first_name }} {{ $student->last_name }}</h2>
+                    <h2 class="text-2xl font-bold text-white">{{ $student->first_name }} {{ $student->middle_name }} {{ $student->last_name }}</h2>
                     <p class="text-blue-100">{{ $student->course }} Student</p>
+                    <p class="text-blue-100 text-sm mt-1">{{ $student->sex }}, {{ \Carbon\Carbon::parse($student->birthday)->age }} years old</p>
                 </div>
             </div>
         </div>
@@ -51,9 +52,50 @@
                             <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                             </svg>
-                            <label class="text-sm text-gray-600 font-medium">Name</label>
+                            <label class="text-sm text-gray-600 font-medium">Full Name</label>
                         </div>
-                        <p class="px-4 py-2 bg-gray-50 rounded-lg border border-gray-100">{{ $student->first_name }} {{ $student->last_name }}</p>
+                        <p class="px-4 py-2 bg-gray-50 rounded-lg border border-gray-100">{{ $student->first_name }} {{ $student->middle_name }} {{ $student->last_name }}</p>
+                    </div>
+
+                    <div>
+                        <div class="flex items-center mb-1">
+                            <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <label class="text-sm text-gray-600 font-medium">Birthday</label>
+                        </div>
+                        <p class="px-4 py-2 bg-gray-50 rounded-lg border border-gray-100">{{ \Carbon\Carbon::parse($student->birthday)->format('F j, Y') }} ({{ \Carbon\Carbon::parse($student->birthday)->age }} years old)</p>
+                    </div>
+
+                    <div>
+                        <div class="flex items-center mb-1">
+                            <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                            <label class="text-sm text-gray-600 font-medium">Birthplace</label>
+                        </div>
+                        <p class="px-4 py-2 bg-gray-50 rounded-lg border border-gray-100">{{ $student->birthplace }}</p>
+                    </div>
+
+                    <div>
+                        <div class="flex items-center mb-1">
+                            <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                            </svg>
+                            <label class="text-sm text-gray-600 font-medium">Gender</label>
+                        </div>
+                        <p class="px-4 py-2 bg-gray-50 rounded-lg border border-gray-100">{{ $student->sex }}</p>
+                    </div>
+
+                    <div>
+                        <div class="flex items-center mb-1">
+                            <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                            </svg>
+                            <label class="text-sm text-gray-600 font-medium">Home Address</label>
+                        </div>
+                        <p class="px-4 py-2 bg-gray-50 rounded-lg border border-gray-100">{{ $student->home_address }}</p>
                     </div>
                 </div>
             </div>

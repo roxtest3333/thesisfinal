@@ -23,10 +23,15 @@ class Student extends Authenticatable implements MustVerifyEmail, CanResetPasswo
     protected $fillable = [
         'student_id',
         'first_name',
+        'middle_name',
         'last_name',
+        'sex',
+        'birthday',
+        'birthplace',
         'email',
         'course',
         'contact_number',
+        'home_address',
         'password',
     ];
 
@@ -50,6 +55,7 @@ class Student extends Authenticatable implements MustVerifyEmail, CanResetPasswo
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'birthday' => 'date',
         ];
     }
 
