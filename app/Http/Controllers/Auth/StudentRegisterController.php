@@ -61,6 +61,7 @@ class StudentRegisterController extends Controller
             'contact_number' => $request->contact_number,
             'home_address' => $request->home_address,
             'password' => Hash::make($request->password),
+            'email_verified_at' => null,
         ]);
 
         // Send verification email
